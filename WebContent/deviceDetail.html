@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>vue</title>
+	<link rel="stylesheet" type="text/css" href="css/weui.min.css">
+<style type="text/css">
+	body{
+		background: #eee;
+	}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+    <div class="weui_cells_title">设备{{deviceId}}</div>
+    <div class="weui_cells">
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>刷新时间</p>
+            </div>
+            <div class="weui_cell_ft">{{device.updateTime}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>温度显示值</p>
+            </div>
+            <div class="weui_cell_ft">{{device.temp}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>温度上限</p>
+            </div>
+            <div class="weui_cell_ft">{{device.tempUpLimit}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>温度下限</p>
+            </div>
+            <div class="weui_cell_ft">{{device.tempDownLimit}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>温度偏差</p>
+            </div>
+            <div class="weui_cell_ft">{{device.tempOff}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>温度实测</p>
+            </div>
+            <div class="weui_cell_ft">{{device.tempReally}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>系统工作模式</p>
+            </div>
+            <div class="weui_cell_ft">{{device.workMode}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>换气次数</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airCount}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>进风变频速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.inWindSpeed}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>出风变频速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.outWindSpeed}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>湿度显示值</p>
+            </div>
+            <div class="weui_cell_ft">{{device.hr}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>湿度上限</p>
+            </div>
+            <div class="weui_cell_ft">{{device.hrUpLimit}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>湿度下限</p>
+            </div>
+            <div class="weui_cell_ft">{{device.hrDownLimit}}</div>
+        </div>
+
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>湿度偏差</p>
+            </div>
+            <div class="weui_cell_ft">{{device.hrOff}}</div>
+        </div>
+
+       <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>湿度实测</p>
+            </div>
+            <div class="weui_cell_ft">{{device.hrReally}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>通讯连续错误</p>
+            </div>
+            <div class="weui_cell_ft">{{device.communicateFalse}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>通讯连续正确</p>
+            </div>
+            <div class="weui_cell_ft">{{device.communicateTrue}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>系统信息栏</p>
+            </div>
+            <div class="weui_cell_ft">{{device.infoBar}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>系统开关状态</p>
+            </div>
+            <div class="weui_cell_ft">{{device.stateSwitch}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差显示值</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dp}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差上限</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dpUpLimit}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差下限</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dpDownLimit}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差偏差</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dpOff}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差实测</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dpReally}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差目标值</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dpTarget}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>正负压模式</p>
+            </div>
+            <div class="weui_cell_ft">{{device.akpMode}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>累计工作小时</p>
+            </div>
+            <div class="weui_cell_ft">{{device.workHour}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>累计工作秒数</p>
+            </div>
+            <div class="weui_cell_ft">{{device.workSecond}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>变频器连续最高</p>
+            </div>
+            <div class="weui_cell_ft">{{device.converterMax}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>变频器连续最低</p>
+            </div>
+            <div class="weui_cell_ft">{{device.converterMin}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>变频器型号选择</p>
+            </div>
+            <div class="weui_cell_ft">{{device.converterModel}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>延周期检错</p>
+            </div>
+            <div class="weui_cell_ft">{{device.cycleError}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>连续报警周期数</p>
+            </div>
+            <div class="weui_cell_ft">{{device.alarmCycle}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>温度报警关闭</p>
+            </div>
+            <div class="weui_cell_ft">{{device.tempAlarmClose}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>湿度报警关闭</p>
+            </div>
+            <div class="weui_cell_ft">{{device.hrAlarmClose}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>压差报警关闭</p>
+            </div>
+            <div class="weui_cell_ft">{{device.dpAlarmClose}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>进风速度上限报警关闭</p>
+            </div>
+            <div class="weui_cell_ft">{{device.inWindAlarmClose}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>10次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed10}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>12次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed12}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>14次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed14}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>16次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed16}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>18次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed18}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>20次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed20}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>22次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed22}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>24次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed24}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>26次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed26}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>28次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed28}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>30次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed30}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>35次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed35}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>40次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed40}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>45次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed45}}</div>
+        </div>
+
+        <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+                <p>50次换气速度</p>
+            </div>
+            <div class="weui_cell_ft">{{device.airSpeed50}}</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <div class="weui_btn_area">
+    <a class="weui_btn weui_btn_primary" href="javascript:" id="showTooltips">操作</a>
+</div> -->
+
+<script src="js/vue.min.js"></script>
+<script src="js/vue-resource.min.js"></script>
+<script type="text/javascript">
+
+	var app = new Vue({
+
+	  created:function(){
+	  	this.deviceId = getQueryString('deviceId');
+	  	this.areaId = getQueryString('areaId');
+	  	var that = this;
+	  	setInterval(function() {
+	  		that.$http.get('/USR/GetDeviceDetail',{params:{deviceId:that.deviceId,areaId:that.areaId}}).then(function(res){
+                if(res.body){
+                    console.info(res.body.result);
+                    that.device = res.body.result;
+                }
+            });
+	  	}, 1000);
+	  	that.$http.get('/USR/GetDeviceDetail',{params:{deviceId:that.deviceId,areaId:that.areaId}}).then(function(res){
+  			if(res.body){
+                console.info(res.body.result);
+  				that.device = res.body.result;
+  			}
+	  	});
+	  },
+	  data: {
+        deviceId:1,
+        device:{}
+	  }
+	}).$mount('#app');
+	
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return decodeURIComponent(r[2]); return 0;
+    }
+</script>
+</body>
+</html>
