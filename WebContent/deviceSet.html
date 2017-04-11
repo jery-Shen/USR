@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>vue</title>
+<link rel="stylesheet" type="text/css" href="css/weui.min.css">
+<style type="text/css">
+body {
+	background: #eee;
+}
+</style>
+</head>
+
+<body>
+
+	<div id="app">
+	
+		<div class="weui-cells__title">设备{{deviceId}}</div>
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label class="weui-label">qq</label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input" type="number" pattern="[0-9]*"
+						placeholder="请输入qq号">
+				</div>
+			</div>
+			
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">日期</label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input" type="date" value="">
+				</div>
+			</div>
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">时间</label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input" type="datetime-local" value=""
+						placeholder="">
+				</div>
+			</div>
+			
+		</div>
+
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell weui-cell_switch">
+				<div class="weui-cell__bd">标题文字</div>
+				<div class="weui-cell__ft">
+					<input class="weui-switch" type="checkbox">
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+
+	<!-- <div class="weui_btn_area">
+    <a class="weui_btn weui_btn_primary" href="javascript:" id="showTooltips">操作</a>
+</div> -->
+
+	<script src="js/vue.min.js"></script>
+	<script src="js/vue-resource.min.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+
+			created : function() {
+				this.deviceId = getQueryString('deviceId');
+				this.areaId = getQueryString('areaId');
+				var that = this;
+
+				that.$http.get('/USR/GetDeviceDetail', {
+					params : {
+						deviceId : that.deviceId,
+						areaId : that.areaId
+					}
+				}).then(function(res) {
+					if (res.body) {
+						console.info(res.body.result);
+						that.device = res.body.result;
+					}
+				});
+			},
+			data : {
+				deviceId : 1,
+				device : {}
+			}
+		}).$mount('#app');
+
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null)
+				return decodeURIComponent(r[2]);
+			return 0;
+		}
+	</script>
+</body>
+</html>
