@@ -211,8 +211,8 @@ body {
 						param.inWindAlarmClose = Number(this.device.inWindAlarmClose);
 					}
 					if(!isEmptyObject(param)){
-						param.areaId = 3;
-						param.deviceId = 2;
+						param.areaId = getQueryString("areaId");
+						param.deviceId = getQueryString("deviceId");
 						console.info(param);
 						
 						
