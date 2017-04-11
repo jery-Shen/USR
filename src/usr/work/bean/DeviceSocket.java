@@ -9,6 +9,7 @@ public class DeviceSocket {
 	private Socket socket;
 	private DataOutputStream dataOut;
 	private Device device;
+	private boolean sending;
 	
 	
 	
@@ -41,6 +42,12 @@ public class DeviceSocket {
 	}
 	public void setDevice(Device device) {
 		this.device = device;
+	}
+	public boolean isSending() {
+		return sending;
+	}
+	public void setSending(boolean sending) {
+		this.sending = sending;
 	}
 	
 	

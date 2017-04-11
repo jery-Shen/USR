@@ -28,7 +28,7 @@ body {
 		<div class="weui-cells weui-cells_form">
 			<div class="weui-cell">
 				<div class="weui-cell__hd">
-					<label class="weui-label">温度</label>
+					<label class="weui-label">当前温度</label>
 				</div>
 				<div class="weui-cell__bd">
 					{{device.temp}}
@@ -57,7 +57,7 @@ body {
 		<div class="weui-cells weui-cells_form">
 			<div class="weui-cell">
 				<div class="weui-cell__hd">
-					<label class="weui-label">湿度</label>
+					<label class="weui-label">当前湿度</label>
 				</div>
 				<div class="weui-cell__bd">
 					{{device.hr}}
@@ -86,7 +86,7 @@ body {
 		<div class="weui-cells weui-cells_form">
 			<div class="weui-cell">
 				<div class="weui-cell__hd">
-					<label class="weui-label">压差</label>
+					<label class="weui-label">当前压差</label>
 				</div>
 				<div class="weui-cell__bd">
 					{{device.dp}}
@@ -195,8 +195,8 @@ body {
 					if(this.device.dpUpLimit!=device.dpUpLimit){
 						param.dpUpLimit = this.device.dpUpLimit;
 					}
-					if(this.device.dpDownpLimit!=device.dpDownpLimit){
-						param.dpDownpLimit = this.device.dpDownpLimit;
+					if(this.device.dpDownLimit!=device.dpDownLimit){
+						param.dpDownLimit = this.device.dpDownLimit;
 					}
 					if(this.device.tempAlarmClose!=device.tempAlarmClose){
 						param.tempAlarmClose = Number(this.device.tempAlarmClose);
@@ -211,9 +211,8 @@ body {
 						param.inWindAlarmClose = Number(this.device.inWindAlarmClose);
 					}
 					if(!isEmptyObject(param)){
-						param.areaId = 1;
+						param.areaId = 3;
 						param.deviceId = 2;
-
 						console.info(param);
 						
 						

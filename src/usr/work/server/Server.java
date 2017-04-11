@@ -11,7 +11,6 @@ import java.util.TimerTask;
 
 import usr.work.bean.DeviceSocket;
 import usr.work.utils.CRC;
-import usr.work.utils.Hex;
 
 public class Server {
 
@@ -61,12 +60,11 @@ public class Server {
 					if (dsockets.size() > 0) {
 						for (DeviceSocket deviceSocket : dsockets) {						
 							int deviceId = deviceSocket.getDeviceId();
-							if(deviceId!=0){
-								
+							if(deviceId!=0&&!deviceSocket.isSending()){
 								byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
 								byte[] crcBytes = CRC.getCRC(bytes);
 								sendOne(crcBytes, deviceSocket);
-								System.out.println(Hex.printHexString(crcBytes));
+								//System.out.println(Hex.printHexString(crcBytes));
 							}
 						}
 					}

@@ -52,10 +52,9 @@ public class ServerThread extends Thread{
 							buffer.reset();
 						}
 					}else if(data.length>=205){
-						
 						if(data[data.length-4]==(byte)0xaa&&data[data.length-3]==(byte)0x55){
-							System.out.println("--------------------------");
-							System.out.println(Hex.printHexString(data));
+							//System.out.println("--------------------------");
+							//System.out.println(Hex.printHexString(data));
 							byte[] crcData = new byte[data.length-2];
 							System.arraycopy(data, 0, crcData, 0, data.length-2);
 							if(CRC.getCRC(crcData)[data.length-1]==data[data.length-1]){
