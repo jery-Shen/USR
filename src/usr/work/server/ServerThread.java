@@ -9,14 +9,16 @@ import java.util.List;
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
 import usr.work.dao.DeviceDao;
+import usr.work.listener.DeviceListener;
 import usr.work.utils.CRC;
 import usr.work.utils.Hex;
 
-public class ServerThread extends Thread{
+public class ServerThread extends Thread implements DeviceListener{
 	Socket socket;
 	DeviceSocket deviceSocket;
 	List<DeviceSocket> dsockets;
 	boolean isClientClose = false;
+	boolean newObj = false;
 	
 	public ServerThread(DeviceSocket deviceSocket,List<DeviceSocket> dsockets){
 		this.deviceSocket = deviceSocket;
@@ -75,11 +77,18 @@ public class ServerThread extends Thread{
 	}
 	
 	private void byteTransfer(byte[] bytes){
-		Device device = new Device();
 		
-		device.setDeviceIp(socket.getInetAddress().getHostAddress());
-		device.setAreaId(deviceSocket.getAreaId());
-		device.setDeviceId(bytes[0]);
+		Device device = deviceSocket.getDevice();
+		if(device==null){
+			newObj = true;
+			device = new Device(this);
+			device.setDeviceIp(socket.getInetAddress().getHostAddress());
+			device.setAreaId(deviceSocket.getAreaId());
+			device.setDeviceId(deviceSocket.getDeviceId());
+			this.listChange(deviceSocket.getAreaId(), 1);
+		}else{
+			newObj = false;
+		}
 
 		device.setOnline(1);
 		device.setTemp(Hex.parseHex4(bytes[3], bytes[4]));
@@ -167,6 +176,18 @@ public class ServerThread extends Thread{
 		} catch (Exception exx) {
 			exx.printStackTrace();
 		}
+		this.listChange(deviceSocket.getAreaId(), -1);
 		isClientClose = true;
+	}
+
+	@Override
+	public void listChange(int areaId, int flag) {
+		System.out.println("listChange:"+areaId+" "+flag);
+	}
+
+	@Override
+	public void objectChange(int areaId, int deviceId, String field, Object oldValue, Object newValue) {
+		System.out.println("objectChange:"+areaId+" "+deviceId+" field:"+field+"  oldValue:"+oldValue+" newValue:"+newValue);
+		
 	}
 }

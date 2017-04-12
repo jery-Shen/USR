@@ -1,5 +1,9 @@
 package usr.work.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
+import usr.work.listener.DeviceListener;
+
 public class Device {
 	private int ID;
 	private int online;
@@ -58,6 +62,17 @@ public class Device {
 	private int airSpeed40;			//40次换气速度
 	private int airSpeed45;			//45次换气速度
 	private int airSpeed50;			//50次换气速度
+	
+	@JSONField(serialize=false)
+	private DeviceListener deviceListener;
+	
+	public Device(){
+		
+	}
+	
+	public Device(DeviceListener deviceListener){
+		this.deviceListener = deviceListener;
+	}
 
 	public int getID() {
 		return ID;
@@ -120,6 +135,9 @@ public class Device {
 	}
 
 	public void setTempUpLimit(int tempUpLimit) {
+		if(deviceListener!=null&&this.tempUpLimit!=tempUpLimit){
+			deviceListener.objectChange(this.areaId, this.deviceId, "tempUpLimit", this.tempUpLimit, tempUpLimit);
+		}
 		this.tempUpLimit = tempUpLimit;
 	}
 
@@ -128,6 +146,9 @@ public class Device {
 	}
 
 	public void setTempDownLimit(int tempDownLimit) {
+		if(deviceListener!=null&&this.tempDownLimit!=tempDownLimit){
+			deviceListener.objectChange(this.areaId, this.deviceId, "tempDownLimit", this.tempDownLimit, tempDownLimit);
+		}
 		this.tempDownLimit = tempDownLimit;
 	}
 
@@ -224,6 +245,9 @@ public class Device {
 	}
 
 	public void setCommunicateFalse(int communicateFalse) {
+		if(deviceListener!=null&&this.communicateFalse!=communicateFalse){
+			deviceListener.objectChange(this.areaId, this.deviceId, "communicateFalse", this.communicateFalse, communicateFalse);
+		}
 		this.communicateFalse = communicateFalse;
 	}
 
@@ -232,6 +256,9 @@ public class Device {
 	}
 
 	public void setCommunicateTrue(int communicateTrue) {
+		if(deviceListener!=null&&this.communicateTrue!=communicateTrue){
+			deviceListener.objectChange(this.areaId, this.deviceId, "communicateTrue", this.communicateTrue, communicateTrue);
+		}
 		this.communicateTrue = communicateTrue;
 	}
 
@@ -240,6 +267,9 @@ public class Device {
 	}
 
 	public void setInfoBar(int infoBar) {
+		if(deviceListener!=null&&this.infoBar!=infoBar){
+			deviceListener.objectChange(this.areaId, this.deviceId, "infoBar", this.infoBar, infoBar);
+		}
 		this.infoBar = infoBar;
 	}
 
