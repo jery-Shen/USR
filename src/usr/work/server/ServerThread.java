@@ -8,6 +8,7 @@ import java.util.List;
 
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
+import usr.work.bean.User;
 import usr.work.dao.DeviceDao;
 import usr.work.dao.UserDao;
 import usr.work.listener.DeviceListener;
@@ -15,24 +16,24 @@ import usr.work.utils.CRC;
 import usr.work.utils.Hex;
 import usr.work.utils.SendSms;
 
-public class ServerThread extends Thread implements DeviceListener{
+public class ServerThread extends Thread implements DeviceListener {
 	Socket socket;
 	DeviceSocket deviceSocket;
 	List<DeviceSocket> dsockets;
 	boolean isClientClose = false;
 	boolean newObj = false;
-	
-	public ServerThread(DeviceSocket deviceSocket,List<DeviceSocket> dsockets){
+
+	public ServerThread(DeviceSocket deviceSocket, List<DeviceSocket> dsockets) {
 		this.deviceSocket = deviceSocket;
 		this.dsockets = dsockets;
 		this.socket = deviceSocket.getSocket();
 	}
-	
+
 	@Override
 	public void run() {
 		DataInputStream dataIn;
 		synchronized (dsockets) {
-			System.out.println("connect sockets:"+dsockets.size());
+			System.out.println("connect sockets:" + dsockets.size());
 		}
 		try {
 			dataIn = new DataInputStream(socket.getInputStream());
@@ -44,24 +45,27 @@ public class ServerThread extends Thread implements DeviceListener{
 				if (readLength <= 0) {
 					socket.sendUrgentData(0);
 				} else {
-					buffer.write(bytes,0,readLength);
+					buffer.write(bytes, 0, readLength);
 					byte[] data = buffer.toByteArray();
-					//System.out.println("read length:"+readLength+"pos:"+data.length+" data:"+Hex.printHexString(bytes));
-					if(deviceSocket.getDeviceId()==0){
-						if(data.length==4&&data[data.length-2]==(byte)0xaa&&data[data.length-1]==(byte)0x55){
+					// System.out.println("read
+					// length:"+readLength+"pos:"+data.length+"
+					// data:"+Hex.printHexString(bytes));
+					if (deviceSocket.getDeviceId() == 0) {
+						if (data.length == 4 && data[data.length - 2] == (byte) 0xaa
+								&& data[data.length - 1] == (byte) 0x55) {
 							System.out.println("--------------------------");
 							System.out.println(Hex.printHexString(data));
 							deviceSocket.setAreaId(data[0]);
 							deviceSocket.setDeviceId(data[1]);
 							buffer.reset();
 						}
-					}else if(data.length>=205){
-						if(data[data.length-4]==(byte)0xaa&&data[data.length-3]==(byte)0x55){
-							//System.out.println("--------------------------");
-							//System.out.println(Hex.printHexString(data));
-							byte[] crcData = new byte[data.length-2];
-							System.arraycopy(data, 0, crcData, 0, data.length-2);
-							if(CRC.getCRC(crcData)[data.length-1]==data[data.length-1]){
+					} else if (data.length >= 205) {
+						if (data[data.length - 4] == (byte) 0xaa && data[data.length - 3] == (byte) 0x55) {
+							// System.out.println("--------------------------");
+							// System.out.println(Hex.printHexString(data));
+							byte[] crcData = new byte[data.length - 2];
+							System.arraycopy(data, 0, crcData, 0, data.length - 2);
+							if (CRC.getCRC(crcData)[data.length - 1] == data[data.length - 1]) {
 								byteTransfer(data);
 							}
 							buffer.reset();
@@ -72,23 +76,23 @@ public class ServerThread extends Thread implements DeviceListener{
 		} catch (Exception esx) {
 			// esx.printStackTrace();
 		} finally {
-			if(!isClientClose){
+			if (!isClientClose) {
 				clientClose();
 			}
 		}
 	}
-	
-	private void byteTransfer(byte[] bytes){
-		
+
+	private void byteTransfer(byte[] bytes) {
+
 		Device device = deviceSocket.getDevice();
-		if(device==null){
+		if (device == null) {
 			newObj = true;
 			device = new Device(this);
 			device.setDeviceIp(socket.getInetAddress().getHostAddress());
 			device.setAreaId(deviceSocket.getAreaId());
 			device.setDeviceId(deviceSocket.getDeviceId());
 			this.listChange(deviceSocket.getAreaId(), 1);
-		}else{
+		} else {
 			newObj = false;
 		}
 
@@ -98,31 +102,31 @@ public class ServerThread extends Thread implements DeviceListener{
 		device.setTempDownLimit(Hex.parseHex4(bytes[7], bytes[8]));
 		device.setTempOff(Hex.parseHex4(bytes[9], bytes[10]));
 		device.setTempReally(Hex.parseHex4(bytes[11], bytes[12]));
-		
+
 		device.setWorkMode(Hex.parseHex4(bytes[15], bytes[16]));
 		device.setAirCount(Hex.parseHex4(bytes[17], bytes[18])); //
 		device.setInWindSpeed(Hex.parseHex4(bytes[19], bytes[20])); //
 		device.setOutWindSpeed(Hex.parseHex4(bytes[21], bytes[22]));//
-		
+
 		device.setHr(Hex.parseHex4(bytes[23], bytes[24]));
 		device.setHrUpLimit(Hex.parseHex4(bytes[25], bytes[26]));
 		device.setHrDownLimit(Hex.parseHex4(bytes[27], bytes[28]));
 		device.setHrOff(Hex.parseHex4(bytes[29], bytes[30]));
 		device.setHrReally(Hex.parseHex4(bytes[31], bytes[32]));
-		
+
 		device.setCommunicateFalse(Hex.parseHex4(bytes[35], bytes[36]));
 		device.setCommunicateTrue(Hex.parseHex4(bytes[37], bytes[38]));
 		device.setInfoBar(Hex.parseHex4(bytes[39], bytes[40]));
 		device.setStateSwitch(Hex.parseHex4(bytes[41], bytes[42]));
-		
-		device.setDp(Hex.parseHex4(bytes[43], bytes[44])); //>125
+
+		device.setDp(Hex.parseHex4(bytes[43], bytes[44])); // >125
 		device.setDpUpLimit(Hex.parseHex4(bytes[45], bytes[46]));
 		device.setDpDownLimit(Hex.parseHex4(bytes[47], bytes[48]));
 		device.setDpOff(Hex.parseHex4(bytes[49], bytes[50]));
 		device.setDpReally(Hex.parseHex4(bytes[51], bytes[52]));
 		device.setDpTarget(Hex.parseHex4(bytes[53], bytes[54]));
 		device.setAkpMode(Hex.parseHex4(bytes[55], bytes[56]));
-		
+
 		device.setWorkHour(Hex.parseHex4(bytes[63], bytes[64])); //
 		device.setWorkSecond(Hex.parseHex4(bytes[65], bytes[66]));//
 		device.setConverterMax(Hex.parseHex4(bytes[67], bytes[68]));
@@ -130,12 +134,12 @@ public class ServerThread extends Thread implements DeviceListener{
 		device.setConverterModel(Hex.parseHex4(bytes[71], bytes[72]));
 		device.setCycleError(Hex.parseHex4(bytes[73], bytes[74]));
 		device.setAlarmCycle(Hex.parseHex4(bytes[75], bytes[76]));
-		
+
 		device.setTempAlarmClose(Hex.parseHex4(bytes[83], bytes[84]));
 		device.setHrAlarmClose(Hex.parseHex4(bytes[85], bytes[86]));
 		device.setDpAlarmClose(Hex.parseHex4(bytes[87], bytes[88]));
 		device.setInWindAlarmClose(Hex.parseHex4(bytes[89], bytes[90]));
-		
+
 		device.setAirSpeed10(Hex.parseHex4(bytes[103], bytes[104])); //
 		device.setAirSpeed12(Hex.parseHex4(bytes[105], bytes[106]));
 		device.setAirSpeed14(Hex.parseHex4(bytes[107], bytes[108]));
@@ -151,13 +155,13 @@ public class ServerThread extends Thread implements DeviceListener{
 		device.setAirSpeed40(Hex.parseHex4(bytes[127], bytes[128]));
 		device.setAirSpeed45(Hex.parseHex4(bytes[129], bytes[130]));
 		device.setAirSpeed50(Hex.parseHex4(bytes[131], bytes[132]));
-		
+
 		device.setUpdateTime(new Date().toLocaleString());
-		
-		if(device.getDeviceId()!=0 && device.getTemp()!=0){
+
+		if (device.getDeviceId() != 0 && device.getTemp() != 0) {
 			deviceSocket.setDevice(device);
 
-			//System.out.println(device);
+			// System.out.println(device);
 			try {
 				DeviceDao deviceDao = new DeviceDao();
 				deviceDao.saveOrUpdate(device);
@@ -171,10 +175,10 @@ public class ServerThread extends Thread implements DeviceListener{
 		synchronized (dsockets) {
 			dsockets.remove(deviceSocket);
 		}
-		System.out.println("disconnect sockets:"+dsockets.size());
+		System.out.println("disconnect sockets:" + dsockets.size());
 		try {
 			socket.close();
-			new DeviceDao().deviceClose(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+			new DeviceDao().deviceClose(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
 		} catch (Exception exx) {
 			exx.printStackTrace();
 		}
@@ -184,20 +188,32 @@ public class ServerThread extends Thread implements DeviceListener{
 
 	@Override
 	public void listChange(int areaId, int flag) {
-		//System.out.println("listChange:"+areaId+" "+flag);
+		// System.out.println("listChange:"+areaId+" "+flag);
 	}
 
 	@Override
 	public void objectChange(int areaId, int deviceId, String field, Object oldValue, Object newValue) {
-		if(!newObj){
-			System.out.println("objectChange:"+areaId+" "+deviceId+" field:"+field+"  oldValue:"+oldValue+" newValue:"+newValue);
-			if(field.endsWith("tempUpLimit")&&((Integer)newValue)==81){
-				SendSms.send("13358018613",deviceId, "温度上限过调节"+newValue);
+		if (!newObj) {
+			System.out.println("objectChange:" + areaId + " " + deviceId + " field:" + field + "  oldValue:" + oldValue
+					+ " newValue:" + newValue);
+			if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
+				SendSms.send("13358018613", deviceId, 1);
 			}
-			
+			if (field.endsWith("infoBar") && (int) newValue > 1) {
+				UserDao userDao = new UserDao();
+				List<User> userList = userDao.getList(areaId);
+				for(User user : userList){
+					if(user.getPhone()!=null&&!user.getPhone().equals("-")){
+						SendSms.send(user.getPhone(), deviceId, (int) newValue);
+					}
+				}
+			}
+
 		}
-		
-		
-		
+
 	}
+	
+	
+	 
+
 }

@@ -76,6 +76,22 @@ $(function(){
                 alert('密码长度必须大于6位');
                 return;
             }
+            if(this.addUserForm.phone&&this.addUserForm.phone!=''){
+            	var reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+            	if(!reg.test(this.addUserForm.phone)) 
+            	{ 
+            	    alert('请输入有效的手机号码！'); 
+            	    return; 
+            	} 
+            }
+            if(this.addUserForm.email&&this.addUserForm.email!=''){
+            	var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/; 
+            	if(!reg.test(this.addUserForm.email)) 
+            	{ 
+            	    alert('请输入有效的邮箱地址！'); 
+            	    return; 
+            	} 
+            }
             var that = this;
             that.$http.post('/USR/AddUser',this.addUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
@@ -107,7 +123,6 @@ $(function(){
             });
         },
         deleteUser:function(userName){
-            console.info(userName);
             var that = this;
             that.$http.get('/USR/DeleteUser',{params:{userName:userName}}).then(function(res){
                 if(res.body&&res.body.status==200){

@@ -173,4 +173,38 @@ public class UserDao {
 		}
 		return flag;
 	}
+
+	public List<User> getList(int areaId) {
+		List<User> userList = new ArrayList<User>();
+		String sql = "select * from u_user where u_area_id=?";
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		ResultSet rs = null;
+		try {
+			conn = DBO.getConn();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, areaId);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				User user = new User();
+				user.setID(rs.getInt("ID"));
+				user.setAreaId(rs.getInt("u_area_id"));
+				user.setPrivilege(rs.getInt("u_privilege"));
+				user.setUserName(rs.getString("u_user_name"));
+				user.setUserPwd(rs.getString("u_user_pwd"));
+				user.setPhone(rs.getString("u_phone"));
+				user.setEmail(rs.getString("u_email"));
+				user.setAddress(rs.getString("u_address"));
+				user.setName(rs.getString("u_name"));
+				user.setDes(rs.getString("u_des"));
+				userList.add(user);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBO.close(conn, pstmt, rs);
+		}
+		return userList;
+	}
 }
