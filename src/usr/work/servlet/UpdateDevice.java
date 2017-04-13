@@ -66,19 +66,19 @@ public class UpdateDevice extends HttpServlet {
 				sendQueue.add(bytes);
 			}
 			if(tempAlarmClose!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x80,0x00,(byte) tempAlarmClose};
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7f,0x00,(byte) tempAlarmClose};
 				sendQueue.add(bytes);
 			}
 			if(hrAlarmClose!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x81,0x00,(byte) hrAlarmClose};
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x80,0x00,(byte) hrAlarmClose};
 				sendQueue.add(bytes);
 			}
 			if(dpAlarmClose!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x82,0x00,(byte) dpAlarmClose};
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x81,0x00,(byte) dpAlarmClose};
 				sendQueue.add(bytes);
 			}
 			if(inWindAlarmClose!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x83,0x00,(byte) inWindAlarmClose};
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x82,0x00,(byte) inWindAlarmClose};
 				sendQueue.add(bytes);
 			}
 			DeviceSocket deviceSocket = getDeviceSocket(areaId, deviceId, Server.dsockets);
@@ -87,7 +87,7 @@ public class UpdateDevice extends HttpServlet {
 				sleep();
 				for(byte[] bytes:sendQueue){
 					byte[] crcBytes = CRC.getCRC(bytes);
-					System.out.println(Hex.printHexString(crcBytes));
+					System.out.println("areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
 					deviceSocket = getDeviceSocket(areaId, deviceId, Server.dsockets);
 					sendOne(crcBytes, deviceSocket);
 					sleep();

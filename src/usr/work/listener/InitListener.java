@@ -19,12 +19,13 @@ public class InitListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
 		server = new Server();
-		server.serveStart(8089);
-		server.scanClient(10);
+		server.serveStart(8089,10);
+		
 	}
 	
 	@Override
 	public void contextDestroyed(ServletContextEvent contextEvent) {
+		server.serveStop();
 //		try {
 //			new DeviceDao().deviceClose();
 //		} catch (Exception e) {

@@ -17,43 +17,38 @@ public class Server {
 	public static List<DeviceSocket> dsockets;
 
 	private ServerSocket serverSocket;
+	private Timer timer;
 
 	public Server() {
 		dsockets = new ArrayList<>();
 	}
 
-	public void makeServe(int port) {
-		try {
-			serverSocket = new ServerSocket(port);
-			//System.out.println(serverSocket.getInetAddress().getLocalHost() + ":" + serverSocket.getLocalPort());
-			while (true) {
-				Socket socket = serverSocket.accept();
-				DeviceSocket deviceSocket = new DeviceSocket();
-				deviceSocket.setSocket(socket);
-				deviceSocket.setDataOut(new DataOutputStream(socket.getOutputStream()));
-				dsockets.add(deviceSocket);
-				ServerThread serverThread = new ServerThread(deviceSocket, dsockets);
-				serverThread.start();
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-
-	public void serveStart(final int port) {
+	private void makeServe(final int port) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				makeServe(port);
+				try {
+					serverSocket = new ServerSocket(port);
+					//System.out.println(serverSocket.getInetAddress().getLocalHost() + ":" + serverSocket.getLocalPort());
+					while (true) {
+						Socket socket = serverSocket.accept();
+						DeviceSocket deviceSocket = new DeviceSocket();
+						deviceSocket.setSocket(socket);
+						deviceSocket.setDataOut(new DataOutputStream(socket.getOutputStream()));
+						dsockets.add(deviceSocket);
+						ServerThread serverThread = new ServerThread(deviceSocket, dsockets);
+						serverThread.start();
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 		}).start();
 	}
 
-	public void scanClient(int scanNum) {
-
-		
-
-		new Timer().schedule(new TimerTask() {
+	private void scanClient(int scanNum) {
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
 			public void run() {
 				synchronized (dsockets) {
 					//System.out.println("current connects:"+dsockets.size());
@@ -72,8 +67,8 @@ public class Server {
 			}
 		}, 2000, 1000);
 	}
-
-	public void sendOne(byte[] bytes, DeviceSocket deviceSocket) {
+	
+	private void sendOne(byte[] bytes, DeviceSocket deviceSocket) {
 		try {
 			deviceSocket.getDataOut().write(bytes);
 			deviceSocket.getDataOut().flush();
@@ -82,5 +77,26 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
+
+	public void serveStart(int port,int scanNum) {
+		makeServe(port);
+		scanClient(scanNum);
+	}
+
+	public void serveStop(){
+		timer.cancel();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try{
+			serverSocket.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 
 }

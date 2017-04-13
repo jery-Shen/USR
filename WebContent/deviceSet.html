@@ -19,6 +19,9 @@ body {
 .weui-btn_primary{
 	background-color: #128bed;
 }
+.weui-btn_primary:not(.weui-btn_disabled):active{
+	background-color: #128bed;
+}
 </style>
 </head>
 
@@ -219,7 +222,7 @@ body {
 						var that = this;
 			            that.$http.post('/USR/UpdateDevice',param,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
 			                if(res.body.status==200){
-			                    console.info('success');
+			                	alert('修改成功')
 			                }else{
 			                    alert(res.body.error);
 			                }

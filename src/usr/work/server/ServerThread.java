@@ -9,9 +9,11 @@ import java.util.List;
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
 import usr.work.dao.DeviceDao;
+import usr.work.dao.UserDao;
 import usr.work.listener.DeviceListener;
 import usr.work.utils.CRC;
 import usr.work.utils.Hex;
+import usr.work.utils.SendSms;
 
 public class ServerThread extends Thread implements DeviceListener{
 	Socket socket;
@@ -182,12 +184,20 @@ public class ServerThread extends Thread implements DeviceListener{
 
 	@Override
 	public void listChange(int areaId, int flag) {
-		System.out.println("listChange:"+areaId+" "+flag);
+		//System.out.println("listChange:"+areaId+" "+flag);
 	}
 
 	@Override
 	public void objectChange(int areaId, int deviceId, String field, Object oldValue, Object newValue) {
-		System.out.println("objectChange:"+areaId+" "+deviceId+" field:"+field+"  oldValue:"+oldValue+" newValue:"+newValue);
+		if(!newObj){
+			System.out.println("objectChange:"+areaId+" "+deviceId+" field:"+field+"  oldValue:"+oldValue+" newValue:"+newValue);
+			if(field.endsWith("tempUpLimit")&&((Integer)newValue)==81){
+				SendSms.send("13358018613",deviceId, "温度上限过调节"+newValue);
+			}
+			
+		}
+		
+		
 		
 	}
 }
