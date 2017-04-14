@@ -11,6 +11,7 @@ public class User {
 	private String address;
 	private String name;
 	private String des;
+	private int loginFlag;
 	public int getID() {
 		return ID;
 	}
@@ -71,6 +72,12 @@ public class User {
 	}
 	public void setPrivilege(int privilege) {
 		this.privilege = privilege;
+	}
+	public int getLoginFlag() {
+		return loginFlag;
+	}
+	public void setLoginFlag(int loginFlag) {
+		this.loginFlag = loginFlag;
 	}
 	
 	
