@@ -31,6 +31,9 @@ $(function(){
             userPwd:'',
             areaId:''
         },
+        updateUserForm:{
+            userName:''
+        },
         resetPwdForm:{
             userName:'',
             userPwd:'',
@@ -57,6 +60,11 @@ $(function(){
             this.resetPwdForm.userPwd=userPwd;
             this.resetPwdForm.newPwd=''
             $('#resetPwdModal').modal();
+
+        },
+        updateUser:function(user){
+            this.updateUserForm = user;
+            $('#updateUserModal').modal();
 
         },
 	  	addUserSubmit:function(){
@@ -102,6 +110,44 @@ $(function(){
                     };
                     this.getData();
                     $('#addUserModal').modal('hide');
+                }else{
+                    alert(res.body.error);
+                }
+            });
+	  	},
+	  	updateUserSubmit:function(){
+	  		if(this.updateUserForm.phone==undefined||this.updateUserForm.phone==''){
+            	this.updateUserForm.phone='-'
+            }
+	  		
+            if(this.updateUserForm.email==undefined||this.updateUserForm.email==''){
+            	this.updateUserForm.email='-'
+            }
+            
+            if(this.updateUserForm.areaId==''){
+                alert('控制区域不能为空');
+                return;
+            }
+            if(this.updateUserForm.phone&&this.updateUserForm.phone!='-'){
+            	var reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+            	if(!reg.test(this.updateUserForm.phone)) 
+            	{ 
+            	    alert('请输入有效的手机号码！'); 
+            	    return; 
+            	} 
+            }
+            if(this.updateUserForm.email&&this.updateUserForm.email!='-'){
+            	var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/; 
+            	if(!reg.test(this.updateUserForm.email)) 
+            	{ 
+            	    alert('请输入有效的邮箱地址！'); 
+            	    return; 
+            	} 
+            }
+            var that = this;
+            that.$http.post('/USR/UpdateUser',this.updateUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+                if(res.body.status==200){
+                    $('#updateUserModal').modal('hide');
                 }else{
                     alert(res.body.error);
                 }
@@ -197,7 +243,7 @@ $(function(){
                     <td>{{user.email}}</td>
                     <td>{{user.address}}</td>
                     <td>{{user.des}}</td>
-                    <td><a href="javascript:;" @click="resetPwd(user.userName,user.userPwd)">重置密码</a> <a href="javascript:;" @click="deleteUser(user.userName)">删除</a></td>
+                    <td><!-- <a href="javascript:;" @click="updateUser(user)">编辑</a> --> <a href="javascript:;" @click="resetPwd(user.userName,user.userPwd)">重置密码</a> <a href="javascript:;" @click="deleteUser(user.userName)">删除</a></td>
                 </tr>
             </tbody>
         </table>
@@ -266,6 +312,70 @@ $(function(){
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" @click="addUserSubmit()" >添加</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    
+    <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">编辑</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group m-t">
+                            <label for="firstname" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.userName" type="text" readonly="true" class="form-control" placeholder="请输入用户名">
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">控制区域 <span class="text-danger">*</span></label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.areaId" type="number" class="form-control" placeholder="请输入控制区域">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.name" type="text" class="form-control" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">电话</label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.phone" type="text" class="form-control" placeholder="请输入电话">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">邮箱</label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.email" type="email" class="form-control" placeholder="请输入邮箱">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">地址</label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.address" type="text" class="form-control" placeholder="请输入地址">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-8">
+                                <input v-model="updateUserForm.des" type="text" class="form-control" placeholder="请输入描述">
+                            </div>
+                        </div>
+                        
+                        
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" @click="updateUserSubmit()" >保存</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
