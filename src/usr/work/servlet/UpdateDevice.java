@@ -2,6 +2,7 @@ package usr.work.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -87,7 +88,7 @@ public class UpdateDevice extends HttpServlet {
 				sleep();
 				for(byte[] bytes:sendQueue){
 					byte[] crcBytes = CRC.getCRC(bytes);
-					System.out.println("areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
+					System.out.println(new Date().toLocaleString()+" areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
 					deviceSocket = getDeviceSocket(areaId, deviceId, Server.dsockets);
 					sendOne(crcBytes, deviceSocket);
 					sleep();

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    
+if(session.getAttribute("user") == null){
+	response.sendRedirect("/USR/login.jsp");
+}
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +16,7 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
-	<script src="js/admin.js"></script>
+	<script src="js/admin.js?t=5"></script>
 </head>
 <body>
 
@@ -23,10 +25,12 @@ $(function(){
 	var app = new Vue({
 	  created:function(){
 	  	this.getData();
+	  	this.edit = getQueryString('edit'); 
 	  },
 	  data: {
 	  	devices:[],
         areaId:0,
+        edit:0,
 		detailDeviceForm:{ },
         updateDeviceForm:{ },
         updateDeviceCopy:{ },
@@ -185,7 +189,7 @@ $(function(){
                     <td>{{device.hr}}</td>
                     <td>{{device.dp}}</td>
                     <td>{{device.updateTime}}</td>
-                    <td><a href="javascript:;" @click="detailDevice(device)">详情</a> <a href="javascript:;" @click="updateDeivce(device)">修改</a></td>
+                    <td><a href="javascript:;" @click="detailDevice(device)">详情</a> <a v-if="edit" href="javascript:;" @click="updateDeivce(device)">修改</a></td>
                 </tr>
             </tbody>
         </table>

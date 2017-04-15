@@ -42,7 +42,7 @@ public class GetUser extends HttpServlet {
 						res.put("user", user);
 						res.put("hostList", hostList);
 						message.setStatus(200);
-						message.setResult(res);
+						message.setResult(user);
 						
 					}else{
 						userDao.updateFlag(userName);
