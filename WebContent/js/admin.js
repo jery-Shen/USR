@@ -1,5 +1,4 @@
 function formatDevice(device) {
-
 	switch (device.infoBar) {
 	case 0:
 		device.infoBarStr = '待机状态，按开启键启动';
@@ -45,7 +44,8 @@ function formatDevice(device) {
 		break;
 
 	}
-
+	
+	device.workModeStr = device.workMode ? '自动' : '手动';
 	device.onlineStr = device.online ? '是' : '否';
 	device.communicateFalseStr = (device.communicateFalse == 0) ? '-'
 			: device.communicateFalse + '次';

@@ -402,7 +402,7 @@ $(function(){
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">新密码 <span class="text-danger">*</span></label>
                             <div class="col-sm-8">
-                                <input v-model="resetPwdForm.newPwd" type="password" class="form-control" placeholder="请输入控制区域">
+                                <input v-model="resetPwdForm.newPwd" type="password" class="form-control" placeholder="请输入新密码">
                             </div>
                         </div>
                         
