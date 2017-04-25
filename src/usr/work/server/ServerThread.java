@@ -3,8 +3,10 @@ package usr.work.server;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
@@ -156,7 +158,7 @@ public class ServerThread extends Thread implements DeviceListener {
 		device.setAirSpeed45(Hex.parseHex4(bytes[129], bytes[130]));
 		device.setAirSpeed50(Hex.parseHex4(bytes[131], bytes[132]));
 
-		device.setUpdateTime(new Date().toLocaleString());
+		device.setUpdateTime(formatDate(new Date()));
 
 		if (device.getDeviceId() != 0 && device.getTemp() != 0) {
 			deviceSocket.setDevice(device);
@@ -170,6 +172,11 @@ public class ServerThread extends Thread implements DeviceListener {
 			}
 		}
 	}
+	
+	public String formatDate(Date date){
+	       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
+	       return sdf.format(date);
+	   }
 
 	private void clientClose() {
 		synchronized (dsockets) {

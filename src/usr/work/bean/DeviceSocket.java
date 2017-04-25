@@ -10,6 +10,7 @@ public class DeviceSocket {
 	private DataOutputStream dataOut;
 	private Device device;
 	private boolean sending;
+	private int UnReceiveTime;
 	
 	
 	
@@ -48,6 +49,12 @@ public class DeviceSocket {
 	}
 	public void setSending(boolean sending) {
 		this.sending = sending;
+	}
+	public int getUnReceiveTime() {
+		return UnReceiveTime;
+	}
+	public void setUnReceiveTime(int unReceiveTime) {
+		UnReceiveTime = unReceiveTime;
 	}
 	
 	
