@@ -82,20 +82,7 @@ public class UpdateDevice extends HttpServlet {
 				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,(byte) 0x82,0x00,(byte) inWindAlarmClose};
 				sendQueue.add(bytes);
 			}
-			DeviceSocket deviceSocket = getDeviceSocket(areaId, deviceId, Server.dsockets);
-			if(deviceSocket!=null){
-				deviceSocket.setSending(true);
-				sleep();
-				for(byte[] bytes:sendQueue){
-					byte[] crcBytes = CRC.getCRC(bytes);
-					System.out.println(new Date().toLocaleString()+" areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
-					deviceSocket = getDeviceSocket(areaId, deviceId, Server.dsockets);
-					sendOne(crcBytes, deviceSocket);
-					sleep();
-				}
-				sleep();
-				deviceSocket.setSending(false);
-			}
+			Server.getInstance().sendUpdate(areaId, deviceId, sendQueue);
 			message.setStatus(200);
 		}else{
 			message.setStatus(212);
@@ -120,36 +107,5 @@ public class UpdateDevice extends HttpServlet {
 		return value;
 	}
 	
-	private DeviceSocket getDeviceSocket(int areaId,int deviceId,List<DeviceSocket> dsockets){
-		synchronized (dsockets) {
-			if (dsockets.size() > 0) {
-				for (DeviceSocket deviceSocket : dsockets) {	
-					if(deviceSocket.getAreaId()==areaId&&deviceSocket.getDeviceId()==deviceId){
-						return deviceSocket;
-					}
-				}
-			}
-		}
-		return null;
-	}
-	
-	private void sleep(){
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void sendOne(byte[] bytes, DeviceSocket deviceSocket) {
-		try {
-			deviceSocket.getDataOut().write(bytes);
-			deviceSocket.getDataOut().flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 }

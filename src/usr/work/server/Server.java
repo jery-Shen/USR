@@ -5,22 +5,34 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import usr.work.bean.DeviceSocket;
 import usr.work.utils.CRC;
+import usr.work.utils.Hex;
 
 public class Server {
+	
+	private static Server instance = null;  
+    public static synchronized Server getInstance() {  
+        if (instance == null) {  
+            instance = new Server();  
+        }  
+        return instance;  
+    }  
 
-	public static List<DeviceSocket> dsockets;
+	public List<DeviceSocket> dsockets = new ArrayList<>();
 
 	private ServerSocket serverSocket;
 	private Timer timer;
+	
+	
 
-	public Server() {
-		dsockets = new ArrayList<>();
+	private Server() {
+		
 	}
 
 	private void makeServe(final int port) {
@@ -97,6 +109,47 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendUpdate(int areaId,int deviceId,List<byte[]> sendQueue){
+		DeviceSocket deviceSocket = getDeviceSocket(areaId, deviceId);
+		if(deviceSocket!=null){
+			deviceSocket.setSending(true);
+			sleep();
+			for(byte[] bytes:sendQueue){
+				byte[] crcBytes = CRC.getCRC(bytes);
+				System.out.println(new Date().toLocaleString()+" areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
+				deviceSocket = getDeviceSocket(areaId, deviceId);
+				sendOne(crcBytes, deviceSocket);
+				sleep();
+			}
+			sleep();
+			deviceSocket.setSending(false);
+		}
+	}
+	
+	private DeviceSocket getDeviceSocket(int areaId,int deviceId){
+		synchronized (dsockets) {
+			if (dsockets.size() > 0) {
+				for (DeviceSocket deviceSocket : dsockets) {	
+					if(deviceSocket.getAreaId()==areaId&&deviceSocket.getDeviceId()==deviceId){
+						return deviceSocket;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private void sleep(){
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 
 
 }

@@ -33,7 +33,7 @@ public class TestUpdate extends HttpServlet {
 		System.out.println(Hex.printHexString(crcBytes));
 		
 		int deviceId = bytes[0];
-		List<DeviceSocket> dsockets = Server.dsockets;
+		List<DeviceSocket> dsockets = Server.getInstance().dsockets;
 		synchronized (dsockets) {
 			if (dsockets.size() > 0) {
 				for (DeviceSocket deviceSocket : dsockets) {	
