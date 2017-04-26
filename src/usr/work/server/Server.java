@@ -57,25 +57,32 @@ public class Server {
 			}
 		}).start();
 	}
-
 	private void scanClient(int scanNum) {
+		synchronized (dsockets) {
+			//System.out.println("current connects:"+dsockets.size());
+			if (dsockets.size() > 0) {
+				for (DeviceSocket deviceSocket : dsockets) {						
+					int deviceId = deviceSocket.getDeviceId();
+					if(deviceId!=0){
+						deviceSocket.setUnReceiveTime(deviceSocket.getUnReceiveTime()-1);
+						if(!deviceSocket.isSending()){
+							byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
+							byte[] crcBytes = CRC.getCRC(bytes);
+							sendOne(crcBytes, deviceSocket);
+							//System.out.println(Hex.printHexString(crcBytes));
+						}
+						
+					}
+				}
+			}
+		}
+	}
+
+	private void scanClientRepeat(int scanNum) {
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
-				synchronized (dsockets) {
-					//System.out.println("current connects:"+dsockets.size());
-					if (dsockets.size() > 0) {
-						for (DeviceSocket deviceSocket : dsockets) {						
-							int deviceId = deviceSocket.getDeviceId();
-							if(deviceId!=0&&!deviceSocket.isSending()){
-								byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
-								byte[] crcBytes = CRC.getCRC(bytes);
-								sendOne(crcBytes, deviceSocket);
-								//System.out.println(Hex.printHexString(crcBytes));
-							}
-						}
-					}
-				}
+				scanClient(scanNum);
 			}
 		}, 2000, 1000);
 	}
@@ -92,7 +99,7 @@ public class Server {
 
 	public void serveStart(int port,int scanNum) {
 		makeServe(port);
-		scanClient(scanNum);
+		scanClientRepeat(scanNum);
 	}
 
 	public void serveStop(){
@@ -117,7 +124,7 @@ public class Server {
 			sleep();
 			for(byte[] bytes:sendQueue){
 				byte[] crcBytes = CRC.getCRC(bytes);
-				System.out.println(new Date().toLocaleString()+" areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
+				//System.out.println(new Date().toLocaleString()+" areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
 				deviceSocket = getDeviceSocket(areaId, deviceId);
 				sendOne(crcBytes, deviceSocket);
 				sleep();
