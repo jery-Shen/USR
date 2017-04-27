@@ -136,7 +136,7 @@ public class Device {
 
 	public void setTempUpLimit(int tempUpLimit) {
 		if(deviceListener!=null&&this.tempUpLimit!=tempUpLimit){
-			deviceListener.objectChange(this.areaId, this.deviceId, "tempUpLimit", this.tempUpLimit, tempUpLimit);
+			deviceListener.objectChange(this, "tempUpLimit", this.tempUpLimit, tempUpLimit);
 		}
 		this.tempUpLimit = tempUpLimit;
 	}
@@ -147,7 +147,7 @@ public class Device {
 
 	public void setTempDownLimit(int tempDownLimit) {
 		if(deviceListener!=null&&this.tempDownLimit!=tempDownLimit){
-			deviceListener.objectChange(this.areaId, this.deviceId, "tempDownLimit", this.tempDownLimit, tempDownLimit);
+			deviceListener.objectChange(this, "tempDownLimit", this.tempDownLimit, tempDownLimit);
 		}
 		this.tempDownLimit = tempDownLimit;
 	}
@@ -214,7 +214,7 @@ public class Device {
 
 	public void setHrUpLimit(int hrUpLimit) {
 		if(deviceListener!=null&&this.hrUpLimit!=hrUpLimit){
-			deviceListener.objectChange(this.areaId, this.deviceId, "hrUpLimit", this.hrUpLimit, hrUpLimit);
+			deviceListener.objectChange(this, "hrUpLimit", this.hrUpLimit, hrUpLimit);
 		}
 		this.hrUpLimit = hrUpLimit;
 	}
@@ -225,7 +225,7 @@ public class Device {
 
 	public void setHrDownLimit(int hrDownLimit) {
 		if(deviceListener!=null&&this.hrDownLimit!=hrDownLimit){
-			deviceListener.objectChange(this.areaId, this.deviceId, "hrDownLimit", this.hrDownLimit, hrDownLimit);
+			deviceListener.objectChange(this, "hrDownLimit", this.hrDownLimit, hrDownLimit);
 		}
 		this.hrDownLimit = hrDownLimit;
 	}
@@ -251,9 +251,9 @@ public class Device {
 	}
 
 	public void setCommunicateFalse(int communicateFalse) {
-		if(deviceListener!=null&&this.communicateFalse!=communicateFalse){
-			deviceListener.objectChange(this.areaId, this.deviceId, "communicateFalse", this.communicateFalse, communicateFalse);
-		}
+//		if(deviceListener!=null&&this.communicateFalse!=communicateFalse){
+//			deviceListener.objectChange(this.areaId, this.deviceId, "communicateFalse", this.communicateFalse, communicateFalse);
+//		}
 		this.communicateFalse = communicateFalse;
 	}
 
@@ -262,9 +262,9 @@ public class Device {
 	}
 
 	public void setCommunicateTrue(int communicateTrue) {
-		if(deviceListener!=null&&this.communicateTrue!=communicateTrue){
-			deviceListener.objectChange(this.areaId, this.deviceId, "communicateTrue", this.communicateTrue, communicateTrue);
-		}
+//		if(deviceListener!=null&&this.communicateTrue!=communicateTrue){
+//			deviceListener.objectChange(this, "communicateTrue", this.communicateTrue, communicateTrue);
+//		}
 		this.communicateTrue = communicateTrue;
 	}
 
@@ -274,7 +274,7 @@ public class Device {
 
 	public void setInfoBar(int infoBar) {
 		if(deviceListener!=null&&this.infoBar!=infoBar){
-			deviceListener.objectChange(this.areaId, this.deviceId, "infoBar", this.infoBar, infoBar);
+			deviceListener.objectChange(this, "infoBar", this.infoBar, infoBar);
 		}
 		this.infoBar = infoBar;
 	}
@@ -301,7 +301,7 @@ public class Device {
 
 	public void setDpUpLimit(int dpUpLimit) {
 		if(deviceListener!=null&&this.dpUpLimit!=dpUpLimit){
-			deviceListener.objectChange(this.areaId, this.deviceId, "dpUpLimit", this.dpUpLimit, dpUpLimit);
+			deviceListener.objectChange(this, "dpUpLimit", this.dpUpLimit, dpUpLimit);
 		}
 		this.dpUpLimit = dpUpLimit;
 	}
@@ -312,7 +312,7 @@ public class Device {
 
 	public void setDpDownLimit(int dpDownLimit) {
 		if(deviceListener!=null&&this.dpDownLimit!=dpDownLimit){
-			deviceListener.objectChange(this.areaId, this.deviceId, "dpDownLimit", this.dpDownLimit, dpDownLimit);
+			deviceListener.objectChange(this, "dpDownLimit", this.dpDownLimit, dpDownLimit);
 		}
 		this.dpDownLimit = dpDownLimit;
 	}

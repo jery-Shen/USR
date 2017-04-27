@@ -159,7 +159,7 @@ body {
 				this.areaId = getQueryString('areaId');
 				var that = this;
 
-				that.$http.get('/USR/GetDeviceDetail', {
+				that.$http.get('${pageContext.request.contextPath}/GetDeviceDetail', {
 					params : {
 						deviceId : that.deviceId,
 						areaId : that.areaId
@@ -217,7 +217,7 @@ body {
 						
 						
 						var that = this;
-			            that.$http.post('/USR/UpdateDevice',param,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+			            that.$http.post('${pageContext.request.contextPath}/UpdateDevice',param,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
 			                if(res.body.status==200){
 			                	alert('修改成功')
 			                }else{

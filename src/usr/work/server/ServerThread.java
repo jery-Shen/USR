@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
 import usr.work.bean.User;
@@ -19,6 +22,9 @@ import usr.work.utils.Hex;
 import usr.work.utils.SendSms;
 
 public class ServerThread extends Thread implements DeviceListener {
+	
+	Log log = LogFactory.getLog(ServerThread.class);
+	
 	Socket socket;
 	DeviceSocket deviceSocket;
 	List<DeviceSocket> dsockets;
@@ -35,7 +41,7 @@ public class ServerThread extends Thread implements DeviceListener {
 	public void run() {
 		DataInputStream dataIn;
 		synchronized (dsockets) {
-			System.out.println("connect sockets:" + dsockets.size());
+			log.info("connect sockets:" + dsockets.size());
 		}
 		try {
 			dataIn = new DataInputStream(socket.getInputStream());
@@ -55,16 +61,16 @@ public class ServerThread extends Thread implements DeviceListener {
 					if (deviceSocket.getDeviceId() == 0) {
 						if (data.length == 4 && data[data.length - 2] == (byte) 0xaa
 								&& data[data.length - 1] == (byte) 0x55) {
-							System.out.println("--------------------------");
-							System.out.println(Hex.printHexString(data));
+							log.info("--------------------------");
+							log.info(Hex.printHexString(data));
 							deviceSocket.setAreaId(data[0]);
 							deviceSocket.setDeviceId(data[1]);
 							buffer.reset();
 						}
 					} else if (data.length >= 205) {
 						if (data[data.length - 4] == (byte) 0xaa && data[data.length - 3] == (byte) 0x55) {
-							// System.out.println("--------------------------");
-							// System.out.println(Hex.printHexString(data));
+//							log.info("--------------------------");
+//							log.info(Hex.printHexString(data));
 							byte[] crcData = new byte[data.length - 2];
 							System.arraycopy(data, 0, crcData, 0, data.length - 2);
 							if (CRC.getCRC(crcData)[data.length - 1] == data[data.length - 1]) {
@@ -161,9 +167,8 @@ public class ServerThread extends Thread implements DeviceListener {
 		device.setUpdateTime(formatDate(new Date()));
 
 		if (device.getDeviceId() != 0 && device.getTemp() != 0) {
+			deviceSocket.setUnReceiveTime(1);
 			deviceSocket.setDevice(device);
-
-			// System.out.println(device);
 			try {
 				DeviceDao deviceDao = new DeviceDao();
 				deviceDao.saveOrUpdate(device);
@@ -182,7 +187,7 @@ public class ServerThread extends Thread implements DeviceListener {
 		synchronized (dsockets) {
 			dsockets.remove(deviceSocket);
 		}
-		System.out.println("disconnect sockets:" + dsockets.size());
+		log.info("disconnect sockets:" + dsockets.size());
 		try {
 			socket.close();
 			new DeviceDao().deviceClose(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
@@ -195,23 +200,46 @@ public class ServerThread extends Thread implements DeviceListener {
 
 	@Override
 	public void listChange(int areaId, int flag) {
-		// System.out.println("listChange:"+areaId+" "+flag);
+		//log.info("listChange:"+areaId+" "+flag);
 	}
 
 	@Override
-	public void objectChange(int areaId, int deviceId, String field, Object oldValue, Object newValue) {
+	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
 		if (!newObj) {
-			System.out.println("objectChange:" + areaId + " " + deviceId + " field:" + field + "  oldValue:" + oldValue
+			log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:" + oldValue
 					+ " newValue:" + newValue);
 			if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
-				SendSms.send("13358018613", deviceId, 1);
+				SendSms.send("13358018613", device.getDeviceId(), "测试报警");
 			}
 			if (field.endsWith("infoBar") && (int) newValue > 1) {
+				String alarmMsg = stringOfInfoBar((int) newValue);
+				switch ((int) newValue) {
+				case 4:
+					alarmMsg += "，当前"+device.getTemp()+"大于上限"+device.getTempUpLimit();
+					break;
+				case 5:
+					alarmMsg += "，当前"+device.getTemp()+"小于下限"+device.getTempDownLimit();
+					break;
+				case 6:
+					alarmMsg += "，当前"+device.getHr()+"大于上限"+device.getHrUpLimit();
+					break;
+				case 7:
+					alarmMsg += "，当前"+device.getHr()+"小于下限"+device.getHrDownLimit();
+					break;
+				case 8:
+					alarmMsg += "，当前"+device.getDp()+"大于上限"+device.getDpUpLimit();
+					break;
+				case 9:
+					alarmMsg += "，当前"+device.getDp()+"小于下限"+device.getDpDownLimit();
+					break;
+				default:
+					break;
+				}
 				UserDao userDao = new UserDao();
-				List<User> userList = userDao.getList(areaId);
+				List<User> userList = userDao.getList(device.getAreaId());
 				for(User user : userList){
 					if(user.getPhone()!=null&&!user.getPhone().equals("-")){
-						SendSms.send(user.getPhone(), deviceId, (int) newValue);
+						SendSms.send(user.getPhone(), device.getDeviceId(),alarmMsg);
 					}
 				}
 			}
@@ -220,6 +248,55 @@ public class ServerThread extends Thread implements DeviceListener {
 
 	}
 	
+	private String stringOfInfoBar(int infoBar) {
+		String infoBarStr = "";
+		switch (infoBar) {
+		case 0:
+			infoBarStr = "待机状态，按开启键启动";
+			break;
+		case 1:
+			infoBarStr = "工作正常，按关闭键停止";
+			break;
+		case 2:
+			infoBarStr = "温度过低";
+			break;
+		case 3:
+			infoBarStr = "断电报警";
+			break;
+		case 4:
+			infoBarStr = "温度超高";
+			break;
+		case 5:
+			infoBarStr = "温度过低";
+			break;
+		case 6:
+			infoBarStr = "湿度超高";
+			break;
+		case 7:
+			infoBarStr = "湿度过低";
+			break;
+		case 8:
+			infoBarStr = "压差过高";
+			break;
+		case 9:
+			infoBarStr = "压差过低";
+			break;
+		case 10:
+			infoBarStr = "模拟量采集通讯故障";
+			break;
+		case 11:
+			infoBarStr = "进风自动调节上限";
+			break;
+		case 12:
+			infoBarStr = "进风自动调节下限";
+			break;
+		case 13:
+			infoBarStr = "模拟量采集通讯故障";
+			break;
+
+		}
+		return infoBarStr;
+	}
 	
 	 
 

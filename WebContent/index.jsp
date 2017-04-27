@@ -2,9 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%
 if(session.getAttribute("user") == null){
-	response.sendRedirect("/USR/login.jsp");
+	response.sendRedirect(request.getContextPath() + "/login.jsp");
 }else{
-	response.sendRedirect("/USR/userManage.jsp");
+	response.sendRedirect(request.getContextPath() + "/userManage.jsp");
 }
 %>
 <!DOCTYPE html>

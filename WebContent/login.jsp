@@ -37,7 +37,7 @@
 				}
 				$.ajax({
 					method : 'post',
-					url : '/USR/AdminLogin',
+					url : '${pageContext.request.contextPath}/AdminLogin',
 					data : {
 						userName : userName,
 						userPwd : userPwd

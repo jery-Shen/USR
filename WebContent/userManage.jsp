@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 if(session.getAttribute("user") == null){
-	response.sendRedirect("/USR/login.jsp");
+	response.sendRedirect(request.getContextPath() + "/login.jsp");
 }
 %>
 <!DOCTYPE html>
@@ -45,7 +45,7 @@ $(function(){
 	  methods: {
         getData:function(){
             var that = this;
-            that.$http.get('/USR/GetUserList').then(function(res){
+            that.$http.get('${pageContext.request.contextPath}/GetUserList').then(function(res){
                 if(res.body){
                     var users = res.body.result;
                     that.users = [];
@@ -103,7 +103,7 @@ $(function(){
             	} 
             }
             var that = this;
-            that.$http.post('/USR/AddUser',this.addUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/AddUser',this.addUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                     this.addUserForm = {
                         userName:'',
@@ -147,7 +147,7 @@ $(function(){
             	} 
             }
             var that = this;
-            that.$http.post('/USR/UpdateUser',this.updateUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/UpdateUser',this.updateUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                     $('#updateUserModal').modal('hide');
                 }else{
@@ -161,7 +161,7 @@ $(function(){
                 return;
             }
             var that = this;
-            that.$http.post('/USR/UpdateUserPwd',this.resetPwdForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/UpdateUserPwd',this.resetPwdForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                     alert('重置成功');
                     $('#resetPwdModal').modal('hide');
@@ -172,7 +172,7 @@ $(function(){
         },
         deleteUser:function(userName){
             var that = this;
-            that.$http.get('/USR/DeleteUser',{params:{userName:userName}}).then(function(res){
+            that.$http.get('${pageContext.request.contextPath}/DeleteUser',{params:{userName:userName}}).then(function(res){
                 if(res.body&&res.body.status==200){
                     this.getData();
                 }

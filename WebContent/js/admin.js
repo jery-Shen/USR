@@ -89,10 +89,9 @@ function formatDevice(device) {
 }
 
 function logout() {
-	console.info(11);
 	$.ajax({
 		method : 'get',
-		url : '/USR/AdminLogout',
+		url : 'AdminLogout',
 		dataType : 'json',
 		data : {},
 		success : function(res) {

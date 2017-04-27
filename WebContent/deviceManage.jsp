@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 if(session.getAttribute("user") == null){
-	response.sendRedirect("/USR/login.jsp");
+	response.sendRedirect(request.getContextPath() + "/login.jsp");
 }
 %>
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ $(function(){
 	  methods: {
         getData:function(){
             var that = this;
-            that.$http.get('/USR/GetDeviceList',{params:{areaId:that.areaId}}).then(function(res){
+            that.$http.get('${pageContext.request.contextPath}/GetDeviceList',{params:{areaId:that.areaId}}).then(function(res){
                 if(res.body){
                     console.info(res.body.result);
                     that.devices = res.body.result;
@@ -104,7 +104,7 @@ $(function(){
 				param.deviceId = this.updateDeviceForm.deviceId;
 				console.info(param);
 				var that = this;
-	            that.$http.post('/USR/UpdateDevice',param,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+	            that.$http.post('${pageContext.request.contextPath}/UpdateDevice',param,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
 	                if(res.body.status==200){
 	                	alert('修改成功');
 	                	$('#updateUserModal').modal('hide');

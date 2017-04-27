@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 if(session.getAttribute("user") == null){
-	response.sendRedirect("/USR/login.jsp");
+	response.sendRedirect(request.getContextPath() + "/login.jsp");
 }    
 %>
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ if(session.getAttribute("user") == null){
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
 	
-	<script src="js/admin.js"></script>
+	<script src="js/admin.js?t=1"></script>
 </head>
 <body>
 
@@ -45,7 +45,7 @@ $(function(){
 	  methods: {
         getData:function(){
             var that = this;
-            that.$http.get('/USR/GetHostList',{params:{areaId:that.areaId}}).then(function(res){
+            that.$http.get('${pageContext.request.contextPath}/GetHostList',{params:{areaId:that.areaId}}).then(function(res){
                 if(res.body){
                     var hosts = res.body.result;
                     that.hosts = [];
@@ -77,7 +77,7 @@ $(function(){
                 return;
             }
             var that = this;
-            that.$http.post('/USR/AddHost',this.addHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/AddHost',this.addHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                     this.addHostForm = {
                     	areaId:'',
@@ -97,7 +97,7 @@ $(function(){
                 return;
             }
             var that = this;
-            that.$http.post('/USR/UpdateHost',this.editHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/UpdateHost',this.editHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                 	this.getData();
                     $('#editHostModal').modal('hide');
@@ -109,7 +109,7 @@ $(function(){
         deleteHost:function(host){
             console.info(host);
             var that = this;
-            that.$http.get('/USR/DeleteHost',{params:{areaId:host.areaId,deviceId:host.deviceId}}).then(function(res){
+            that.$http.get('${pageContext.request.contextPath}/DeleteHost',{params:{areaId:host.areaId,deviceId:host.deviceId}}).then(function(res){
                 if(res.body&&res.body.status==200){
                     this.getData();
                 }
