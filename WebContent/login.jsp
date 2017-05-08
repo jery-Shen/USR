@@ -52,7 +52,7 @@
 								window.localStorage.setItem('rememberUserName','');
 								window.localStorage.setItem('rememberUserPwd','');
 							}
-							location.href = 'userManage.jsp';
+							location.href = 'deviceManage.jsp';
 						} else {
 							alert(res.error);
 						}

@@ -209,14 +209,13 @@ $(function(){
     
     
     <div class="modal fade" id="detailDeviceModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">设备{{detailDeviceForm.deviceId}}</h4>
                 </div>
                 <div class="modal-body">
-                	
 						<table class="table  table-bordered">
 							<tbody>
 								<tr><td>系统信息栏</td><td>{{detailDeviceForm.infoBarStr}}</td></tr>
@@ -245,14 +244,14 @@ $(function(){
 								<tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
 								<tr><td>累计工作时间</td><td>{{detailDeviceForm.workTime}}</td></tr>
 								
-								<tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
+								<!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
 								<tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>
 								<tr><td>18次换气速度:{{detailDeviceForm.airSpeed18}}</td><td>20次换气速度:{{detailDeviceForm.airSpeed20}}</td></tr>
 								<tr><td>22次换气速度:{{detailDeviceForm.airSpeed22}}</td><td>24次换气速度:{{detailDeviceForm.airSpeed24}}</td></tr>
 								<tr><td>26次换气速度:{{detailDeviceForm.airSpeed26}}</td><td>28次换气速度:{{detailDeviceForm.airSpeed28}}</td></tr>
 								<tr><td>30次换气速度:{{detailDeviceForm.airSpeed30}}</td><td>35次换气速度:{{detailDeviceForm.airSpeed35}}</td></tr>
 								<tr><td>40次换气速度:{{detailDeviceForm.airSpeed40}}</td><td>45次换气速度:{{detailDeviceForm.airSpeed45}}</td></tr>
-								<tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr>
+								<tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr> -->
 							</tbody>
 						</table>
 					</div>

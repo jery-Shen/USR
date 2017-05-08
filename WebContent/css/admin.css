@@ -32,3 +32,8 @@ body{
 	max-width:450px;
 	margin:10% auto;
 }
+@media (min-width: 768px){
+	 .modal-md{
+		width: 900px;
+	}
+}
