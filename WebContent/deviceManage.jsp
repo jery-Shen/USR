@@ -26,6 +26,7 @@ $(function(){
 	  created:function(){
 	  	this.getData();
 	  	this.edit = getQueryString('edit'); 
+	  	this.edit = 1;
 	  },
 	  data: {
 	  	devices:[],
@@ -45,6 +46,13 @@ $(function(){
                     that.devices = res.body.result;
                     for(var i=0;i<that.devices.length;i++){
                         that.devices[i] = formatDevice(that.devices[i]);
+                        if(that.devices[i].infoBar==0){
+                        	that.devices[i].trClass='text-muted';
+                        }else if(that.devices[i].infoBar==1){
+                        	that.devices[i].trClass='';
+                        }else{
+                        	that.devices[i].trClass='text-danger';
+                        }
                     }
                 }
             });
@@ -180,7 +188,7 @@ $(function(){
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="device in devices">
+                <tr :class="device.trClass" v-for="device in devices">
                 	<td>{{device.areaId}}</td>
                     <td>{{device.deviceId}}</td>
                     <td>{{device.onlineStr}}</td>
@@ -216,44 +224,104 @@ $(function(){
                     <h4 class="modal-title">设备{{detailDeviceForm.deviceId}}</h4>
                 </div>
                 <div class="modal-body">
-						<table class="table  table-bordered">
-							<tbody>
-								<tr><td>系统信息栏</td><td>{{detailDeviceForm.infoBarStr}}</td></tr>
-								<tr><td>系统开关状态</td><td>{{detailDeviceForm.stateSwitchStr}}</td></tr>
-								<tr><td>连续通讯错误</td><td>{{detailDeviceForm.communicateFalseStr}}</td></tr>
-								<tr><td>刷新时间</td><td>{{detailDeviceForm.updateTime}}</td></tr>
-								<tr><td>温度</td><td>当前:{{detailDeviceForm.temp}}， 上限:{{detailDeviceForm.tempUpLimit}}， 下限:{{detailDeviceForm.tempDownLimit}}</td></tr>
-								<tr><td>湿度</td><td>当前:{{detailDeviceForm.hr}}， 上限:{{detailDeviceForm.hrUpLimit}}， 下限:{{detailDeviceForm.hrDownLimit}}</td></tr>
-								<tr><td>压差</td><td>当前:{{detailDeviceForm.dp}}， 上限:{{detailDeviceForm.dpUpLimit}}， 下限:{{detailDeviceForm.dpDownLimit}}</td></tr>
-								<tr><td>换气次数</td><td>{{detailDeviceForm.airCount}}</td></tr>
-								<tr><td>进风变频速度</td><td>{{detailDeviceForm.inWindSpeed}}</td></tr>
-								<tr><td>出风变频速度</td><td>{{detailDeviceForm.outWindSpeed}}</td></tr>
-								
-								<tr><td>压差目标值</td><td>{{detailDeviceForm.dpTarget}}</td></tr>
-								<tr><td>正负压模式</td><td>{{detailDeviceForm.akpModeStr}}</td></tr>
-								<tr><td>压差传感器型号选择</td><td>{{detailDeviceForm.converterModelStr}}</td></tr>
-								<tr><td>变频器连续最高</td><td>{{detailDeviceForm.converterMax}}</td></tr>
-								<tr><td>变频器连续最低</td><td>{{detailDeviceForm.converterMin}}</td></tr>
-								
-								<tr><td>延周期检错</td><td>{{detailDeviceForm.cycleError}}</td></tr>
-								<tr><td>连续报警周期数</td><td>{{detailDeviceForm.alarmCycle}}</td></tr>
-								
-								<tr><td>温度报警</td><td>{{detailDeviceForm.tempAlarmCloseStr}}</td></tr>
-								<tr><td>湿度报警</td><td>{{detailDeviceForm.hrAlarmCloseStr}}</td></tr>
-								<tr><td>压差报警</td><td>{{detailDeviceForm.dpAlarmCloseStr}}</td></tr>
-								<tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
-								<tr><td>累计工作时间</td><td>{{detailDeviceForm.workTime}}</td></tr>
-								
-								<!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
-								<tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>
-								<tr><td>18次换气速度:{{detailDeviceForm.airSpeed18}}</td><td>20次换气速度:{{detailDeviceForm.airSpeed20}}</td></tr>
-								<tr><td>22次换气速度:{{detailDeviceForm.airSpeed22}}</td><td>24次换气速度:{{detailDeviceForm.airSpeed24}}</td></tr>
-								<tr><td>26次换气速度:{{detailDeviceForm.airSpeed26}}</td><td>28次换气速度:{{detailDeviceForm.airSpeed28}}</td></tr>
-								<tr><td>30次换气速度:{{detailDeviceForm.airSpeed30}}</td><td>35次换气速度:{{detailDeviceForm.airSpeed35}}</td></tr>
-								<tr><td>40次换气速度:{{detailDeviceForm.airSpeed40}}</td><td>45次换气速度:{{detailDeviceForm.airSpeed45}}</td></tr>
-								<tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr> -->
-							</tbody>
-						</table>
+						<div class="row">
+                            <div class="col-md-6">
+                                <table class="table  table-bordered">
+                                <caption>基本信息</caption>
+                            <tbody>
+                            
+                                <tr><td>温度</td><td>当前:{{detailDeviceForm.temp}}， 上限:{{detailDeviceForm.tempUpLimit}}， 下限:{{detailDeviceForm.tempDownLimit}}</td></tr>
+                                <tr><td>湿度</td><td>当前:{{detailDeviceForm.hr}}， 上限:{{detailDeviceForm.hrUpLimit}}， 下限:{{detailDeviceForm.hrDownLimit}}</td></tr>
+                                <tr><td>压差</td><td>当前:{{detailDeviceForm.dp}}， 上限:{{detailDeviceForm.dpUpLimit}}， 下限:{{detailDeviceForm.dpDownLimit}}</td></tr>
+                                <tr><td>系统信息栏</td><td>{{detailDeviceForm.infoBarStr}}</td></tr>
+                                <tr><td>系统开关状态</td><td>{{detailDeviceForm.stateSwitchStr}}</td></tr>
+                                <tr><td>连续通讯错误</td><td>{{detailDeviceForm.communicateFalseStr}}</td></tr>
+                                <tr><td>刷新时间</td><td>{{detailDeviceForm.updateTime}}</td></tr>
+                                
+                                <tr><td>换气次数</td><td>{{detailDeviceForm.airCount}}</td></tr>
+                                <tr><td>进风变频速度</td><td>{{detailDeviceForm.inWindSpeed}}</td></tr>
+                                <tr><td>出风变频速度</td><td>{{detailDeviceForm.outWindSpeed}}</td></tr>
+                                
+                                <tr><td>压差目标值</td><td>{{detailDeviceForm.dpTarget}}</td></tr>
+                                <tr><td>正负压模式</td><td>{{detailDeviceForm.akpModeStr}}</td></tr>
+                                <tr><td>压差传感器型号选择</td><td>{{detailDeviceForm.converterModelStr}}</td></tr>
+                                <tr><td>变频器连续最高</td><td>{{detailDeviceForm.converterMax}}</td></tr>
+                                <tr><td>变频器连续最低</td><td>{{detailDeviceForm.converterMin}}</td></tr>
+                                
+                                <tr><td>延周期检错</td><td>{{detailDeviceForm.cycleError}}</td></tr>
+                                <tr><td>连续报警周期数</td><td>{{detailDeviceForm.alarmCycle}}</td></tr>
+                                
+                                <!-- <tr><td>温度报警</td><td>{{detailDeviceForm.tempAlarmCloseStr}}</td></tr>
+                                <tr><td>湿度报警</td><td>{{detailDeviceForm.hrAlarmCloseStr}}</td></tr>
+                                <tr><td>压差报警</td><td>{{detailDeviceForm.dpAlarmCloseStr}}</td></tr>
+                                <tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
+                                <tr><td>累计工作时间</td><td>{{detailDeviceForm.workTime}}</td></tr> -->
+                                
+                                <!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
+                                <tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>
+                                <tr><td>18次换气速度:{{detailDeviceForm.airSpeed18}}</td><td>20次换气速度:{{detailDeviceForm.airSpeed20}}</td></tr>
+                                <tr><td>22次换气速度:{{detailDeviceForm.airSpeed22}}</td><td>24次换气速度:{{detailDeviceForm.airSpeed24}}</td></tr>
+                                <tr><td>26次换气速度:{{detailDeviceForm.airSpeed26}}</td><td>28次换气速度:{{detailDeviceForm.airSpeed28}}</td></tr>
+                                <tr><td>30次换气速度:{{detailDeviceForm.airSpeed30}}</td><td>35次换气速度:{{detailDeviceForm.airSpeed35}}</td></tr>
+                                <tr><td>40次换气速度:{{detailDeviceForm.airSpeed40}}</td><td>45次换气速度:{{detailDeviceForm.airSpeed45}}</td></tr>
+                                <tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr> -->
+                            </tbody>
+                        </table>
+                            </div>
+                                              
+                            <div class="col-md-6">
+                                <table class="table  table-bordered">
+                                <caption>系统参数</caption>
+                            <tbody>
+                            
+                                <tr><td>温度</td><td>当前:{{detailDeviceForm.temp}}， 上限:{{detailDeviceForm.tempUpLimit}}， 下限:{{detailDeviceForm.tempDownLimit}}</td></tr>
+                                <tr><td>湿度</td><td>当前:{{detailDeviceForm.hr}}， 上限:{{detailDeviceForm.hrUpLimit}}， 下限:{{detailDeviceForm.hrDownLimit}}</td></tr>
+                                <tr><td>压差</td><td>当前:{{detailDeviceForm.dp}}， 上限:{{detailDeviceForm.dpUpLimit}}， 下限:{{detailDeviceForm.dpDownLimit}}</td></tr>
+                                <tr><td>系统信息栏</td><td>{{detailDeviceForm.infoBarStr}}</td></tr>
+                                <tr><td>系统开关状态</td><td>{{detailDeviceForm.stateSwitchStr}}</td></tr>
+                                <tr><td>连续通讯错误</td><td>{{detailDeviceForm.communicateFalseStr}}</td></tr>
+                                <tr><td>刷新时间</td><td>{{detailDeviceForm.updateTime}}</td></tr>
+                                
+                                <tr><td>换气次数</td><td>{{detailDeviceForm.airCount}}</td></tr>
+                                <tr><td>进风变频速度</td><td>{{detailDeviceForm.inWindSpeed}}</td></tr>
+                                <tr><td>出风变频速度</td><td>{{detailDeviceForm.outWindSpeed}}</td></tr>
+                                
+                                
+                                
+                                <!-- <tr><td>温度报警</td><td>{{detailDeviceForm.tempAlarmCloseStr}}</td></tr>
+                                <tr><td>湿度报警</td><td>{{detailDeviceForm.hrAlarmCloseStr}}</td></tr>
+                                <tr><td>压差报警</td><td>{{detailDeviceForm.dpAlarmCloseStr}}</td></tr>
+                                <tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
+                                <tr><td>累计工作时间</td><td>{{detailDeviceForm.workTime}}</td></tr> -->
+                                
+                                <!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
+                                <tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>
+                                <tr><td>18次换气速度:{{detailDeviceForm.airSpeed18}}</td><td>20次换气速度:{{detailDeviceForm.airSpeed20}}</td></tr>
+                                <tr><td>22次换气速度:{{detailDeviceForm.airSpeed22}}</td><td>24次换气速度:{{detailDeviceForm.airSpeed24}}</td></tr>
+                                <tr><td>26次换气速度:{{detailDeviceForm.airSpeed26}}</td><td>28次换气速度:{{detailDeviceForm.airSpeed28}}</td></tr>
+                                <tr><td>30次换气速度:{{detailDeviceForm.airSpeed30}}</td><td>35次换气速度:{{detailDeviceForm.airSpeed35}}</td></tr>
+                                <tr><td>40次换气速度:{{detailDeviceForm.airSpeed40}}</td><td>45次换气速度:{{detailDeviceForm.airSpeed45}}</td></tr>
+                                <tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr> -->
+                            </tbody>
+                        </table>
+
+                            </div>                  
+                        </div>
+
+                         <table class="table  table-bordered">
+                            <caption>历史报警</caption>
+                            <tbody>
+                            
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                                <tr><td>asdasd  缩放胜多负少东方闪电胜多负少</td></tr>
+                               
+                            </tbody>
+                        </table>
 					</div>
                 
             </div><!-- /.modal-content -->
