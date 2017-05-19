@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import usr.work.bean.DeviceSocket;
+import usr.work.dao.DeviceDao;
 import usr.work.utils.CRC;
 import usr.work.utils.Hex;
 
@@ -71,7 +72,9 @@ public class Server {
 							sendOne(crcBytes, deviceSocket);
 							//System.out.println(Hex.printHexString(crcBytes));
 						}
-						
+						if(deviceSocket.getUnReceiveTime()==-10){
+							new DeviceDao().deviceClose(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
+						}
 					}
 				}
 			}
