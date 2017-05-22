@@ -102,19 +102,6 @@ function logout() {
 	})
 }
 
-function getAreaList(){
-	$.ajax({
-		method : 'get',
-		url : 'GetAreaList',
-		dataType : 'json',
-		data : {},
-		success : function(res) {
-			if (res.status == 200) {
-				window.localStorage.setItem('areas',JSON.stringify(res.result));
-			}
-		}
-	})
-}
 
 function getAreaNameById(areaId){
 	var areas = JSON.parse(window.localStorage.getItem('areas'));

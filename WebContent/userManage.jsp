@@ -33,7 +33,7 @@ $(function(){
         addUserForm:{
             userName:'',
             userPwd:'',
-            areaId:''
+            areaId:0
         },
         updateUserForm:{
             userName:''
@@ -111,7 +111,7 @@ $(function(){
                     this.addUserForm = {
                         userName:'',
                         userPwd:'',
-                        areaId:''
+                        areaId:0
                     };
                     this.getData();
                     $('#addUserModal').modal('hide');
@@ -152,6 +152,7 @@ $(function(){
             var that = this;
             that.$http.post('${pageContext.request.contextPath}/UpdateUser',this.updateUserForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
+                	that.updateUserForm.areaName = getAreaNameById(that.updateUserForm.areaId);
                     $('#updateUserModal').modal('hide');
                 }else{
                     alert(res.body.error);
@@ -232,8 +233,8 @@ $(function(){
                 <tr>
                 	<th>用户名</th>
                     <th>控制区域</th>
-                    <th>姓名</th>
                     <th>电话</th>
+                    <th>姓名</th>
                     <th>邮箱</th>
                     <th>地址</th>
                     <th>描述</th>
@@ -244,12 +245,12 @@ $(function(){
                 <tr v-for="user in users">
                 	<td>{{user.userName}}</td>
                     <td>{{user.areaName}}</td>
-                    <td>{{user.name}}</td>
                     <td>{{user.phone}}</td>
+                    <td>{{user.name}}</td>
                     <td>{{user.email}}</td>
                     <td>{{user.address}}</td>
                     <td>{{user.des}}</td>
-                    <td><!-- <a href="javascript:;" @click="updateUser(user)">编辑</a> --> <a href="javascript:;" @click="resetPwd(user.userName,user.userPwd)">重置密码</a> <a href="javascript:;" @click="deleteUser(user.userName)">删除</a></td>
+                    <td><!-- <a href="javascript:;" @click="updateUser(user)">编辑</a>  --><a href="javascript:;" @click="resetPwd(user.userName,user.userPwd)">重置密码</a> <a href="javascript:;" @click="deleteUser(user.userName)">删除</a></td>
                 </tr>
             </tbody>
         </table>
@@ -279,19 +280,22 @@ $(function(){
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">控制区域 <span class="text-danger">*</span></label>
                             <div class="col-sm-8">
-                                <input v-model="addUserForm.areaId" type="number" class="form-control" placeholder="请输入控制区域">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastname" class="col-sm-2 control-label">姓名</label>
-                            <div class="col-sm-8">
-                                <input v-model="addUserForm.name" type="text" class="form-control" placeholder="请输入姓名">
+                            	<select v-model="addUserForm.areaId" class="form-control">
+                            		<option value="0">请选择</option>
+            						<option v-for="area in areas" :value="area.iD" >{{area.areaName}}</option>
+                            	</select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">电话</label>
                             <div class="col-sm-8">
                                 <input v-model="addUserForm.phone" type="text" class="form-control" placeholder="请输入电话">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-8">
+                                <input v-model="addUserForm.name" type="text" class="form-control" placeholder="请输入姓名">
                             </div>
                         </div>
                         <div class="form-group">
@@ -340,7 +344,9 @@ $(function(){
                          <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">控制区域 <span class="text-danger">*</span></label>
                             <div class="col-sm-8">
-                                <input v-model="updateUserForm.areaId" type="number" class="form-control" placeholder="请输入控制区域">
+                                <select v-model="updateUserForm.areaId" class="form-control">
+            						<option v-for="area in areas" :value="area.iD" >{{area.areaName}}</option>
+                            	</select>
                             </div>
                         </div>
                         <div class="form-group">

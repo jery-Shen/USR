@@ -11,7 +11,7 @@ if(session.getAttribute("user") == null){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>设备管理</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/admin.css" rel="stylesheet">
+	<link href="css/admin.css?t=2" rel="stylesheet">
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
@@ -37,7 +37,7 @@ $(function(){
 		detailDeviceForm:{ },
         updateDeviceForm:{ },
         updateDeviceCopy:{ },
-        filterData:{areaId:''}
+        filterData:{areaId:0}
 	  },
 	  methods: {
         getData:function(){
@@ -65,7 +65,7 @@ $(function(){
             this.getData();
         },
         clearFilter:function(){
-            this.filterData.areaId = '';
+            this.filterData.areaId = 0;
             this.areaId = 0;
             this.getData();
         },
@@ -167,7 +167,10 @@ $(function(){
     <form class="form-inline" role="form">
         <div class="form-group">
             <label class="" for="name">区域Id:</label>
-            <input v-model="filterData.areaId" type="text" class="form-control" id="name" placeholder="输入区域Id">
+            <select v-model="filterData.areaId"  class="form-control select">
+            	<option value="0">请选择</option>
+            	<option v-for="area in areas" :value="area.iD" >{{area.areaName}}</option>
+            </select>
         </div>
         <div class="form-group m-l">
             <button type="button" class="btn btn-primary" @click="searchFilter()">查询</button>

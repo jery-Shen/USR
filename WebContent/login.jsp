@@ -45,6 +45,7 @@
 					dataType : 'json',
 					success : function(res) {
 						if (res.status == 200) {
+							window.localStorage.setItem('areas',JSON.stringify(res.result));
 							if($('#remember')[0].checked){
 								window.localStorage.setItem('rememberUserName',userName);
 								window.localStorage.setItem('rememberUserPwd',userPwd);
@@ -52,7 +53,6 @@
 								window.localStorage.setItem('rememberUserName','');
 								window.localStorage.setItem('rememberUserPwd','');
 							}
-							getAreaList();
 							location.href = 'deviceManage.jsp';
 						} else {
 							alert(res.error);

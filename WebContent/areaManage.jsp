@@ -137,7 +137,7 @@ $(function(){
         <table class="table table-bordered">
             <thead>
                 <tr>
-                	<th>区域Id</th>
+                	<th>区域号</th>
                     <th>区域名</th>
                     <th>负责人</th>
                     <th>联系电话</th>

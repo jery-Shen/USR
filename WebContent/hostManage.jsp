@@ -34,12 +34,13 @@ $(function(){
 	  	areaId:0,
 	  	filterData:{areaId:0},
         addHostForm:{
-            areaId:'',
+            areaId:0,
             deviceId:'',
             mac:''
         },
         editHostForm:{
         	areaId:'',
+        	areaName:'',
             deviceId:'',
             mac:''
         }
@@ -59,7 +60,8 @@ $(function(){
             });
         },
         editHost:function(host){
-            this.editHostForm.areaId=host.areaId;
+        	this.editHostForm.areaId=host.areaId;
+            this.editHostForm.areaName=host.areaName;
             this.editHostForm.deviceId=host.deviceId;
             this.editHostForm.mac=host.mac
             this.editHostForm.des=host.des
@@ -83,7 +85,7 @@ $(function(){
             that.$http.post('${pageContext.request.contextPath}/AddHost',this.addHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                     this.addHostForm = {
-                    	areaId:'',
+                    	areaId:0,
                         deviceId:'',
                         mac:''
                     };
@@ -168,7 +170,7 @@ $(function(){
     <form class="form-inline" role="form">
    		<div class="form-group">
             <label class="" for="name">区域:</label>
-            <select v-model="filterData.areaId"  class="form-control">
+            <select v-model="filterData.areaId"  class="form-control select">
             	<option value="0">请选择</option>
             	<option v-for="area in areas" :value="area.iD" >{{area.areaName}}</option>
             </select>
@@ -186,6 +188,7 @@ $(function(){
         <table class="table table-bordered">
             <thead>
                 <tr>
+                	<th>区域号</th>
                 	<th>设备区域</th>
                     <th>设备号</th>
                     <th>mac地址</th>
@@ -196,6 +199,7 @@ $(function(){
             </thead>
             <tbody>
                 <tr v-for="host in hosts">
+                	<td>{{host.areaId}}</td>
                 	<td>{{host.areaName}}</td>
                     <td>{{host.deviceId}}</td>
                     <td>{{host.mac}}</td>
@@ -218,7 +222,10 @@ $(function(){
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">设备区域 <span class="text-danger">*</span></label>
                             <div class="col-sm-8">
-                                <input v-model="addHostForm.areaId" type="number" class="form-control" placeholder="请输入设备区域">
+                                <select v-model="addHostForm.areaId"  class="form-control" placeholder="请输入设备区域">
+                                	<option value="0">请选择</option>
+                                	<option v-for="area in areas" :value="area.iD" >{{area.areaName}}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -261,7 +268,7 @@ $(function(){
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">设备区域</label>
                             <div class="col-sm-8">
-                                <input v-model="editHostForm.areaId" type="number" readonly="true" class="form-control">
+                                <input v-model="editHostForm.areaName" type="text" readonly="true" class="form-control">
                             </div>
                         </div>
                         

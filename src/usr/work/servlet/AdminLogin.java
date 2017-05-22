@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import usr.work.bean.Host;
 import usr.work.bean.Message;
 import usr.work.bean.User;
+import usr.work.dao.AreaDao;
 import usr.work.dao.HostDao;
 import usr.work.dao.UserDao;
 
@@ -38,7 +39,9 @@ public class AdminLogin extends HttpServlet {
 					if(user.getUserPwd().equals(userPwd)){
 						if(user.getPrivilege()==5){
 							request.getSession().setAttribute("user", user);
+							message.setResult(new AreaDao().getList());
 							message.setStatus(200);
+							
 						}else{
 							message.setStatus(211);
 							message.setError("用户无权限，请联系管理员");
