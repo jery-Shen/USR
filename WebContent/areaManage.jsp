@@ -42,7 +42,9 @@ $(function(){
             var that = this;
             that.$http.get('${pageContext.request.contextPath}/GetAreaList').then(function(res){
                 if(res.body){
+                	window.localStorage.setItem('areas',JSON.stringify(res.body.result));
                     this.areas = res.body.result;
+                    
                 }
             });
         },
