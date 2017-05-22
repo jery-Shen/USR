@@ -1,8 +1,8 @@
 package usr.work.bean;
 
-public class Region {
+public class Area {
 	private int ID;
-	private String regionName;
+	private String areaName;
 	private String chargeName;
 	private String chargePhone;
 	private String createTime;
@@ -12,11 +12,11 @@ public class Region {
 	public void setID(int iD) {
 		ID = iD;
 	}
-	public String getRegionName() {
-		return regionName;
+	public String getAreaName() {
+		return areaName;
 	}
-	public void setRegionName(String regionName) {
-		this.regionName = regionName;
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
 	}
 	public String getChargeName() {
 		return chargeName;

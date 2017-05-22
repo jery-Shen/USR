@@ -26,9 +26,11 @@ $(function(){
 	var app = new Vue({
 	  created:function(){
 	  	this.getData();
+	  	this.getAreaList();
 	  },
 	  data: {
 	  	hosts:[],
+	  	areas:[],
 	  	areaId:0,
 	  	filterData:{areaId:''},
         addHostForm:{
@@ -54,6 +56,23 @@ $(function(){
                     }
                 }
             });
+        },
+        getAreaList:function(){
+        	var that = this;
+            that.$http.get('${pageContext.request.contextPath}/GetAreaList').then(function(res){
+                if(res.body){
+                	that.areas = res.body.result;
+                }
+            });
+        },
+        
+        getAreaById:function(areaId){
+        	for(var i=0;i<this.areas.length;i++){
+        		if(this.areas[i].iD == areaId){
+        			return this.areas[i].areaName;
+        		}
+        	}
+        	return '';
         },
         editHost:function(host){
             this.editHostForm.areaId=host.areaId;
@@ -145,7 +164,7 @@ $(function(){
 				<li><a href="deviceManage.jsp">设备管理</a></li>
                 <li><a href="userManage.jsp">用户管理</a></li>
                 <li class="active"><a href="hostManage.jsp">主机映射</a></li>
-                <li><a href="regionManage.jsp">区域管理</a></li>
+                <li><a href="areaManage.jsp">区域管理</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -190,7 +209,7 @@ $(function(){
             </thead>
             <tbody>
                 <tr v-for="host in hosts">
-                	<td>{{host.areaId}}</td>
+                	<td>{{getAreaById(host.areaId)}}</td>
                     <td>{{host.deviceId}}</td>
                     <td>{{host.mac}}</td>
                     <td>{{host.des}}</td>

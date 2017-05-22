@@ -200,7 +200,7 @@ $(function(){
 				<li><a href="deviceManage.jsp">设备管理</a></li>
                 <li class="active"><a href="userManage.jsp">用户管理</a></li>
                 <li><a href="hostManage.jsp">主机映射</a></li>
-                <li><a href="regionManage.jsp">区域管理</a></li>
+                <li><a href="areaManage.jsp">区域管理</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">

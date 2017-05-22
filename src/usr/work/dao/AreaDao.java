@@ -6,22 +6,22 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import usr.work.bean.Region;
+import usr.work.bean.Area;
 import usr.work.utils.DBO;
 
-public class RegionDao {
+public class AreaDao {
 
-	public boolean add(Region region){
+	public boolean add(Area area){
 		boolean flag = false;
-		String sql = "insert into u_region(u_region_name,u_charge_name,u_charge_phone,u_create_time) values(?,?,?,now())";
+		String sql = "insert into u_area(u_area_name,u_charge_name,u_charge_phone,u_create_time) values(?,?,?,now())";
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		try {
 			conn = DBO.getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,region.getRegionName() );
-			pstmt.setString(2, region.getChargeName());
-			pstmt.setString(3, region.getChargePhone());
+			pstmt.setString(1,area.getAreaName() );
+			pstmt.setString(2, area.getChargeName());
+			pstmt.setString(3, area.getChargePhone());
 			pstmt.executeUpdate();
 			flag = true;
 		} catch (Exception e) {
@@ -32,18 +32,18 @@ public class RegionDao {
 		return flag;
 	}
 	
-	public boolean update(Region region){
+	public boolean update(Area area){
 		boolean flag = false;
-		String sql = "update u_region set u_region_name=?,u_charge_name=?,u_charge_phone=? where ID=?";
+		String sql = "update u_area set u_area_name=?,u_charge_name=?,u_charge_phone=? where ID=?";
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		try {
 			conn = DBO.getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, region.getRegionName());
-			pstmt.setString(2, region.getChargeName());
-			pstmt.setString(3, region.getChargePhone());
-			pstmt.setInt(4, region.getID());
+			pstmt.setString(1, area.getAreaName());
+			pstmt.setString(2, area.getChargeName());
+			pstmt.setString(3, area.getChargePhone());
+			pstmt.setInt(4, area.getID());
 			int rs = pstmt.executeUpdate();
 			if(rs>0){
 				flag = true;
@@ -56,9 +56,9 @@ public class RegionDao {
 		return flag;
 	}
 	
-	public List<Region> getList(){
-		List<Region> regionList = new ArrayList<Region>();
-		String sql = "select * from u_region";
+	public List<Area> getList(){
+		List<Area> areaList = new ArrayList<Area>();
+		String sql = "select * from u_area";
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		ResultSet rs = null;
@@ -67,19 +67,19 @@ public class RegionDao {
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				Region region = new Region();
-				region.setID(rs.getInt("ID"));
-				region.setRegionName(rs.getString("u_region_name"));
-				region.setChargeName(rs.getString("u_charge_name"));
-				region.setChargePhone(rs.getString("u_charge_phone"));
-				region.setCreateTime(rs.getString("u_create_time"));
-				regionList.add(region);
+				Area area = new Area();
+				area.setID(rs.getInt("ID"));
+				area.setAreaName(rs.getString("u_area_name"));
+				area.setChargeName(rs.getString("u_charge_name"));
+				area.setChargePhone(rs.getString("u_charge_phone"));
+				area.setCreateTime(rs.getString("u_create_time"));
+				areaList.add(area);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			DBO.close(conn, pstmt, rs);
 		}
-		return regionList;
+		return areaList;
 	}
 }

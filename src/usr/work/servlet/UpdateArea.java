@@ -10,32 +10,32 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 
 import usr.work.bean.Message;
-import usr.work.bean.Region;
-import usr.work.dao.RegionDao;
+import usr.work.bean.Area;
+import usr.work.dao.AreaDao;
 
 /**
- * Servlet implementation class UpdateRegion
+ * Servlet implementation class UpdateArea
  */
-@WebServlet("/UpdateRegion")
-public class UpdateRegion extends HttpServlet {
+@WebServlet("/UpdateArea")
+public class UpdateArea extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String iD = request.getParameter("iD");
-		String regionName = request.getParameter("regionName");
+		String areaName = request.getParameter("areaName");
 		String chargeName = request.getParameter("chargeName");
 		String chargePhone = request.getParameter("chargePhone");
 		Message message = new Message();
-		Region region = null;
-		if(regionName!=null){
-			region = new Region();
-			region.setID(Integer.parseInt(iD));
-			region.setRegionName(regionName);
-			region.setChargeName(chargeName);
-			region.setChargePhone(chargePhone);
-			RegionDao regionDao = new RegionDao();
-			if(regionDao.update(region)){
+		Area area = null;
+		if(areaName!=null){
+			area = new Area();
+			area.setID(Integer.parseInt(iD));
+			area.setAreaName(areaName);
+			area.setChargeName(chargeName);
+			area.setChargePhone(chargePhone);
+			AreaDao areaDao = new AreaDao();
+			if(areaDao.update(area)){
 				message.setStatus(200);
 			}else{
 				message.setStatus(215);

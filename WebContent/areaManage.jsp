@@ -28,60 +28,60 @@ $(function(){
 	  	this.getData();
 	  },
 	  data: {
-	  	regions:[],
-        addRegionForm:{
-            regionName:''
+	  	areas:[],
+        addAreaForm:{
+            areaName:''
         },
-        editRegionForm:{
+        editAreaForm:{
         	iD:'',
-        	regionName:''
+        	areaName:''
         }
 	  },
 	  methods: {
         getData:function(){
             var that = this;
-            that.$http.get('${pageContext.request.contextPath}/GetRegionList').then(function(res){
+            that.$http.get('${pageContext.request.contextPath}/GetAreaList').then(function(res){
                 if(res.body){
-                    this.regions = res.body.result;
+                    this.areas = res.body.result;
                 }
             });
         },
-        editRegion:function(region){
-            this.editRegionForm.iD=region.iD;
-            this.editRegionForm.regionName=region.regionName;
-            this.editRegionForm.chargeName=region.chargeName
-            this.editRegionForm.chargePhone=region.chargePhone
-            $('#editRegionModal').modal();
+        editArea:function(area){
+            this.editAreaForm.iD=area.iD;
+            this.editAreaForm.areaName=area.areaName;
+            this.editAreaForm.chargeName=area.chargeName
+            this.editAreaForm.chargePhone=area.chargePhone
+            $('#editAreaModal').modal();
 
         },
-	  	addRegionSubmit:function(){
-            if(this.addRegionForm.regionName==''){
+	  	addAreaSubmit:function(){
+            if(this.addAreaForm.areaName==''){
                 alert('区域名不能为空');
                 return;
             }
             var that = this;
-            that.$http.post('${pageContext.request.contextPath}/AddRegion',this.addRegionForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/AddArea',this.addAreaForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
-                    this.addRegionForm = {
-                    	regionName:'',
+                    this.addAreaForm = {
+                    	areaName:'',
                     };
                     this.getData();
-                    $('#addRegionModal').modal('hide');
+                    $('#addAreaModal').modal('hide');
                 }else{
                     alert(res.body.error);
                 }
             });
 	  	},
-        editRegionSubmit:function(){
-            if(this.editRegionForm.regionName==''){
+        editAreaSubmit:function(){
+            if(this.editAreaForm.areaName==''){
                 alert('区域名不能为空');
                 return;
             }
             var that = this;
-            that.$http.post('${pageContext.request.contextPath}/UpdateRegion',this.editRegionForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
+            that.$http.post('${pageContext.request.contextPath}/UpdateArea',this.editAreaForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
                 	this.getData();
-                    $('#editRegionModal').modal('hide');
+                    $('#editAreaModal').modal('hide');
                 }else{
                     alert(res.body.error);
                 }
@@ -108,7 +108,7 @@ $(function(){
 				<li><a href="deviceManage.jsp">设备管理</a></li>
                 <li><a href="userManage.jsp">用户管理</a></li>
                 <li><a href="hostManage.jsp">主机映射</a></li>
-                <li class="active"><a href="regionManage.jsp">区域管理</a></li>
+                <li class="active"><a href="areaManage.jsp">区域管理</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -129,7 +129,7 @@ $(function(){
    		
        
         <div class="form-group m-l pull-right">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRegionModal">创建区域</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAreaModal">创建区域</button>
         </div>
         <div class="clearfix"></div>
     </form>
@@ -147,20 +147,20 @@ $(function(){
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="region in regions">
-                	<td>{{region.iD}}</td>
-                    <td>{{region.regionName}}</td>
-                    <td>{{region.chargeName}}</td>
-                    <td>{{region.chargePhone}}</td>
-                    <td>{{region.createTime}}</td>
-                    <td><a href="javascript:;" @click="editRegion(region)">编辑</a></td>
+                <tr v-for="area in areas">
+                	<td>{{area.iD}}</td>
+                    <td>{{area.areaName}}</td>
+                    <td>{{area.chargeName}}</td>
+                    <td>{{area.chargePhone}}</td>
+                    <td>{{area.createTime}}</td>
+                    <td><a href="javascript:;" @click="editArea(area)">编辑</a></td>
                 </tr>
             </tbody>
         </table>
     </div>
     
     
-    <div class="modal fade" id="addRegionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="addAreaModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -172,32 +172,32 @@ $(function(){
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">区域名 <span class="text-danger">*</span></label>
                             <div class="col-sm-8">
-                                <input v-model="addRegionForm.regionName" type="text" class="form-control" placeholder="请输入区域名">
+                                <input v-model="addAreaForm.areaName" type="text" class="form-control" placeholder="请输入区域名">
                             </div>
                         </div>
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">负责人</label>
                             <div class="col-sm-8">
-                                <input v-model="addRegionForm.chargeName" type="text" class="form-control" placeholder="请输入负责人">
+                                <input v-model="addAreaForm.chargeName" type="text" class="form-control" placeholder="请输入负责人">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">联系电话</label>
                             <div class="col-sm-8">
-                                <input v-model="addRegionForm.chargePhone" type="text" class="form-control" placeholder="请输入设备号">
+                                <input v-model="addAreaForm.chargePhone" type="text" class="form-control" placeholder="请输入设备号">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" @click="addRegionSubmit()" >添加</button>
+                    <button type="button" class="btn btn-primary" @click="addAreaSubmit()" >添加</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
 
-    <div class="modal fade" id="editRegionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="editAreaModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -209,32 +209,32 @@ $(function(){
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">区域Id</label>
                             <div class="col-sm-8">
-                                <input v-model="editRegionForm.iD" type="number" readonly="true" class="form-control">
+                                <input v-model="editAreaForm.iD" type="number" readonly="true" class="form-control">
                             </div>
                         </div>
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">区域名 <span class="text-danger">*</span></label>
                             <div class="col-sm-8">
-                                <input v-model="editRegionForm.regionName" type="text" class="form-control" placeholder="请输入区域名">
+                                <input v-model="editAreaForm.areaName" type="text" class="form-control" placeholder="请输入区域名">
                             </div>
                         </div>
                         <div class="form-group m-t">
                             <label for="firstname" class="col-sm-2 control-label">负责人</label>
                             <div class="col-sm-8">
-                                <input v-model="editRegionForm.chargeName" type="text" class="form-control" placeholder="请输入负责人">
+                                <input v-model="editAreaForm.chargeName" type="text" class="form-control" placeholder="请输入负责人">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-2 control-label">联系电话</label>
                             <div class="col-sm-8">
-                                <input v-model="editRegionForm.chargePhone" type="text" class="form-control" placeholder="请输入设备号">
+                                <input v-model="editAreaForm.chargePhone" type="text" class="form-control" placeholder="请输入设备号">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" @click="editRegionSubmit()" >保存</button>
+                    <button type="button" class="btn btn-primary" @click="editAreaSubmit()" >保存</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
