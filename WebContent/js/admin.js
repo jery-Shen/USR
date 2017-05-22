@@ -102,6 +102,30 @@ function logout() {
 	})
 }
 
+function getAreaList(){
+	$.ajax({
+		method : 'get',
+		url : 'GetAreaList',
+		dataType : 'json',
+		data : {},
+		success : function(res) {
+			if (res.status == 200) {
+				window.localStorage.setItem('areas',JSON.stringify(res.result));
+			}
+		}
+	})
+}
+
+function getAreaNameById(areaId){
+	var areas = JSON.parse(window.localStorage.getItem('areas'));
+	for(var i=0;i<areas.length;i++){
+		if(areas[i].iD == areaId){
+			return areas[i].areaName;
+		}
+	}
+	return '';
+}
+
 function getQueryString(name) {
 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
 	var r = window.location.search.substr(1).match(reg);
@@ -124,4 +148,5 @@ function isEmptyObject(e) {
     for (t in e)  
         return !1;  
     return !0  
-}  
+} 
+

@@ -13,7 +13,7 @@
 <link href="css/admin.css" rel="stylesheet">
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/admin.js?t=1"></script>
+<script src="js/admin.js?t=2"></script>
 </head>
 <body>
 	<script type="text/javascript">
@@ -52,6 +52,7 @@
 								window.localStorage.setItem('rememberUserName','');
 								window.localStorage.setItem('rememberUserPwd','');
 							}
+							getAreaList();
 							location.href = 'deviceManage.jsp';
 						} else {
 							alert(res.error);

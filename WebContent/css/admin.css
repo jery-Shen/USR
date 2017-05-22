@@ -4,6 +4,9 @@
 .well{
    background: #f8f8f8;
 }
+select{
+	width:150px !important;
+}
 .table{
    margin-top: 15px;
    margin-bottom: 5px;

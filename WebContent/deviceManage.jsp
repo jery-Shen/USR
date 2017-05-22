@@ -16,7 +16,7 @@ if(session.getAttribute("user") == null){
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
-	<script src="js/admin.js?t=6"></script>
+	<script src="js/admin.js?t=2"></script>
 </head>
 <body>
 
@@ -27,9 +27,11 @@ $(function(){
 	  	this.getData();
 	  	this.edit = getQueryString('edit'); 
 	  	this.edit = 1;
+	  	this.areas = JSON.parse(window.localStorage.getItem('areas'));
 	  },
 	  data: {
 	  	devices:[],
+	  	areas:[],
         areaId:0,
         edit:0,
 		detailDeviceForm:{ },
@@ -46,6 +48,7 @@ $(function(){
                     that.devices = res.body.result;
                     for(var i=0;i<that.devices.length;i++){
                         that.devices[i] = formatDevice(that.devices[i]);
+                        that.devices[i].areaName = getAreaNameById(that.devices[i].areaId);
                         if(that.devices[i].infoBar==0){
                         	that.devices[i].trClass='text-muted';
                         }else if(that.devices[i].infoBar==1){
@@ -190,7 +193,7 @@ $(function(){
             </thead>
             <tbody>
                 <tr :class="device.trClass" v-for="device in devices">
-                	<td>{{device.areaId}}</td>
+                	<td>{{device.areaName}}</td>
                     <td>{{device.deviceId}}</td>
                     <td>{{device.onlineStr}}</td>
                     <td>{{device.infoBarStr}}</td>
@@ -267,7 +270,6 @@ $(function(){
                                 <tr><td>湿度报警</td><td>{{detailDeviceForm.hrAlarmCloseStr}}</td></tr>
                                 <tr><td>压差报警</td><td>{{detailDeviceForm.dpAlarmCloseStr}}</td></tr>
                                 <tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
-                                
                                 
                                 <!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
                                 <tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>

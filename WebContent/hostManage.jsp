@@ -11,13 +11,13 @@ if(session.getAttribute("user") == null){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>主机映射</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/admin.css" rel="stylesheet">
+	<link href="css/admin.css?t=2" rel="stylesheet">
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
 	
-	<script src="js/admin.js?t=1"></script>
+	<script src="js/admin.js?t=2"></script>
 </head>
 <body>
 
@@ -26,13 +26,13 @@ $(function(){
 	var app = new Vue({
 	  created:function(){
 	  	this.getData();
-	  	this.getAreaList();
+	  	this.areas = JSON.parse(window.localStorage.getItem('areas'));
 	  },
 	  data: {
 	  	hosts:[],
 	  	areas:[],
 	  	areaId:0,
-	  	filterData:{areaId:''},
+	  	filterData:{areaId:0},
         addHostForm:{
             areaId:'',
             deviceId:'',
@@ -52,27 +52,11 @@ $(function(){
                     var hosts = res.body.result;
                     that.hosts = [];
                     for(var i=0;i<hosts.length;i++){
+                    	hosts[i].areaName = getAreaNameById(hosts[i].areaId);
                     	that.hosts.push(hosts[i]);
                     }
                 }
             });
-        },
-        getAreaList:function(){
-        	var that = this;
-            that.$http.get('${pageContext.request.contextPath}/GetAreaList').then(function(res){
-                if(res.body){
-                	that.areas = res.body.result;
-                }
-            });
-        },
-        
-        getAreaById:function(areaId){
-        	for(var i=0;i<this.areas.length;i++){
-        		if(this.areas[i].iD == areaId){
-        			return this.areas[i].areaName;
-        		}
-        	}
-        	return '';
         },
         editHost:function(host){
             this.editHostForm.areaId=host.areaId;
@@ -139,7 +123,7 @@ $(function(){
             this.getData();
         },
         clearFilter:function(){
-            this.filterData.areaId = '';
+            this.filterData.areaId = 0;
             this.areaId = 0;
             this.getData();
         }
@@ -183,8 +167,11 @@ $(function(){
 <div id="app" class="content well">
     <form class="form-inline" role="form">
    		<div class="form-group">
-            <label class="" for="name">区域Id:</label>
-            <input v-model="filterData.areaId" type="text" class="form-control" id="name" placeholder="输入区域Id">
+            <label class="" for="name">区域:</label>
+            <select v-model="filterData.areaId"  class="form-control">
+            	<option value="0">请选择</option>
+            	<option v-for="area in areas" :value="area.iD" >{{area.areaName}}</option>
+            </select>
         </div>
         <div class="form-group m-l">
             <button type="button" class="btn btn-primary" @click="searchFilter()">查询</button>
@@ -209,7 +196,7 @@ $(function(){
             </thead>
             <tbody>
                 <tr v-for="host in hosts">
-                	<td>{{getAreaById(host.areaId)}}</td>
+                	<td>{{host.areaName}}</td>
                     <td>{{host.deviceId}}</td>
                     <td>{{host.mac}}</td>
                     <td>{{host.des}}</td>
@@ -218,7 +205,6 @@ $(function(){
             </tbody>
         </table>
     </div>
-    
     
     <div class="modal fade" id="addHostModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">

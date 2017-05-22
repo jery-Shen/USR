@@ -16,7 +16,7 @@ if(session.getAttribute("user") == null){
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
-	<script src="js/admin.js"></script>
+	<script src="js/admin.js?t=2"></script>
 </head>
 <body>
 
@@ -25,9 +25,11 @@ $(function(){
 	var app = new Vue({
 	  created:function(){
 	  	this.getData();
+	  	this.areas = JSON.parse(window.localStorage.getItem('areas'));
 	  },
 	  data: {
 	  	users:[],
+	  	areas:[],
         addUserForm:{
             userName:'',
             userPwd:'',
@@ -51,6 +53,7 @@ $(function(){
                     that.users = [];
                     for(var i=0;i<users.length;i++){
                         if(users[i].privilege!=5){
+                        	users[i].areaName = getAreaNameById(users[i].areaId);
                             that.users.push(users[i]);
                         }
                     }
@@ -240,7 +243,7 @@ $(function(){
             <tbody>
                 <tr v-for="user in users">
                 	<td>{{user.userName}}</td>
-                    <td>{{user.areaId}}</td>
+                    <td>{{user.areaName}}</td>
                     <td>{{user.name}}</td>
                     <td>{{user.phone}}</td>
                     <td>{{user.email}}</td>
@@ -251,7 +254,6 @@ $(function(){
             </tbody>
         </table>
     </div>
-    
     
     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
