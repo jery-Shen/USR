@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,7 +12,6 @@ import java.util.TimerTask;
 import usr.work.bean.DeviceSocket;
 import usr.work.dao.DeviceDao;
 import usr.work.utils.CRC;
-import usr.work.utils.Hex;
 
 public class Server {
 	
@@ -29,9 +27,6 @@ public class Server {
 
 	private ServerSocket serverSocket;
 	private Timer timer;
-	
-	
-
 	private Server() {
 		
 	}

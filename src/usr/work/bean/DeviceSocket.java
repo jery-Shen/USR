@@ -12,8 +12,6 @@ public class DeviceSocket {
 	private boolean sending;
 	private int UnReceiveTime;
 	
-	
-	
 	public int getAreaId() {
 		return areaId;
 	}
