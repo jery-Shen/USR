@@ -9,11 +9,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import usr.work.bean.DeviceSocket;
 import usr.work.dao.DeviceDao;
 import usr.work.utils.CRC;
 
 public class Server {
+	
+	Log log = LogFactory.getLog(Server.class);
 	
 	private static Server instance = null;  
     public static synchronized Server getInstance() {  
@@ -69,7 +74,8 @@ public class Server {
 						}
 						if(deviceSocket.getUnReceiveTime()==-10){
 							if(deviceSocket.getDevice()!=null){
-								new DeviceDao().deviceCloseAndUpdate(deviceSocket.getDevice());
+								new DeviceDao().deviceClose(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+								log.info(deviceSocket.getDeviceId() + ":deviceClose1");
 								deviceSocket.setDevice(null);
 							}
 						}

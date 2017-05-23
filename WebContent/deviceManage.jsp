@@ -60,6 +60,9 @@ $(function(){
                         }else{
                         	devices[i].trClass='text-danger';
                         }
+                        if(devices[i].online==0){
+                        	devices[i].trClass='text-muted';
+                        }
                         that.devices.push(devices[i]);
                     }
                     

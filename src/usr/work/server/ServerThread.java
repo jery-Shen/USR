@@ -173,14 +173,11 @@ public class ServerThread extends Thread implements DeviceListener {
 			deviceSocket.setDevice(device);
 			deviceSocket.setUnReceiveTime(1);
 			deviceSocket.setReceiveCount(deviceSocket.getReceiveCount()+1);
-			if(deviceSocket.getReceiveCount()<5 || deviceSocket.getReceiveCount()%360==0){
-				try {
-					log.info(device.getDeviceId() + ":saveOrUpdate");
-					DeviceDao deviceDao = new DeviceDao();
-					deviceDao.saveOrUpdate(device);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			try {
+				DeviceDao deviceDao = new DeviceDao();
+				deviceDao.saveOrUpdate(device);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -197,7 +194,8 @@ public class ServerThread extends Thread implements DeviceListener {
 		log.info("disconnect sockets:" + dsockets.size());
 		if(deviceSocket.getDevice()!=null){
 			try {
-				new DeviceDao().deviceCloseAndUpdate(deviceSocket.getDevice());
+				new DeviceDao().deviceClose(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+				log.info(deviceSocket.getDeviceId() + ":deviceClose2");
 				this.listChange(deviceSocket.getAreaId(), -1);
 			} catch (Exception e) {}
 		}
