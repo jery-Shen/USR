@@ -3,8 +3,17 @@ package usr.work.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.log4j.chainsaw.Main;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import usr.work.bean.Device;
 import usr.work.utils.DBO;
@@ -225,6 +234,7 @@ public class DeviceDao {
 				device.setAirSpeed40(rs.getInt("u_air_speed40"));
 				device.setAirSpeed45(rs.getInt("u_air_speed45"));
 				device.setAirSpeed50(rs.getInt("u_air_speed50"));
+				device.setAlarmHistory(rs.getString("u_alarm_history"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -304,6 +314,7 @@ public class DeviceDao {
 				device.setAirSpeed40(rs.getInt("u_air_speed40"));
 				device.setAirSpeed45(rs.getInt("u_air_speed45"));
 				device.setAirSpeed50(rs.getInt("u_air_speed50"));
+				device.setAlarmHistory(rs.getString("u_alarm_history"));
 				deviceList.add(device);
 			}
 		} catch (Exception e) {
@@ -382,6 +393,7 @@ public class DeviceDao {
 				device.setAirSpeed40(rs.getInt("u_air_speed40"));
 				device.setAirSpeed45(rs.getInt("u_air_speed45"));
 				device.setAirSpeed50(rs.getInt("u_air_speed50"));
+				device.setAlarmHistory(rs.getString("u_alarm_history"));
 				deviceList.add(device);
 			}
 		} catch (Exception e) {
@@ -422,6 +434,48 @@ public class DeviceDao {
 		}finally{
 			DBO.close(conn,pstmt);
 		}
+	}
+
+	public void updateAlarm(int areaId, int deviceId,String alarmHistory) {
+		String sql ="update u_device set u_alarm_history=? where u_area_id=? and u_device_id=?";
+		PreparedStatement pstmt =null;
+		Connection conn=null;
+		try {
+			conn=DBO.getConn();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1,alarmHistory);
+			pstmt.setInt(2,areaId);
+			pstmt.setInt(3,deviceId);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			DBO.close(conn,pstmt);
+		}
+	}
+	
+	public String formatDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+		return sdf.format(date);
+	}
+	
+	private void recordAlarm(int areaId,int deviceId,String alarmMsg) {
+		DeviceDao deviceDao = new DeviceDao();
+		Device device = deviceDao.get(areaId, deviceId);
+		String alarmHistory = device.getAlarmHistory();
+		JSONArray alarmJsonArray = JSON.parseArray(alarmHistory);
+		if(alarmJsonArray.size()>=8){
+			alarmJsonArray.remove(0);
+		}
+		JSONObject alarmJson =  new JSONObject();
+		alarmJson.put("time", formatDate(new Date()));
+		alarmJson.put("msg", alarmMsg);
+		alarmJsonArray.add(alarmJson);
+		deviceDao.updateAlarm(areaId,deviceId,alarmJsonArray.toJSONString());
+	}
+	
+	public static void main(String[] args) {
+		new DeviceDao().recordAlarm(1, 1, "温度超高,当前28大于上限25");
 	}
 	
 	

@@ -11,6 +11,10 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
 import usr.work.bean.User;
@@ -22,9 +26,9 @@ import usr.work.utils.Hex;
 import usr.work.utils.SendSms;
 
 public class ServerThread extends Thread implements DeviceListener {
-	
+
 	Log log = LogFactory.getLog(ServerThread.class);
-	
+
 	Socket socket;
 	DeviceSocket deviceSocket;
 	List<DeviceSocket> dsockets;
@@ -69,8 +73,8 @@ public class ServerThread extends Thread implements DeviceListener {
 						}
 					} else if (data.length >= 205) {
 						if (data[data.length - 4] == (byte) 0xaa && data[data.length - 3] == (byte) 0x55) {
-//							log.info("--------------------------");
-//							log.info(Hex.printHexString(data));
+							// log.info("--------------------------");
+							// log.info(Hex.printHexString(data));
 							byte[] crcData = new byte[data.length - 2];
 							System.arraycopy(data, 0, crcData, 0, data.length - 2);
 							if (CRC.getCRC(crcData)[data.length - 1] == data[data.length - 1]) {
@@ -129,7 +133,7 @@ public class ServerThread extends Thread implements DeviceListener {
 		device.setDpReally(Hex.parseHex4(bytes[51], bytes[52]));
 		device.setDpTarget(Hex.parseHex4(bytes[53], bytes[54]));
 		device.setAkpMode(Hex.parseHex4(bytes[55], bytes[56]));
-		
+
 		device.setCommunicateFalse(Hex.parseHex4(bytes[35], bytes[36]));
 		device.setCommunicateTrue(Hex.parseHex4(bytes[37], bytes[38]));
 		device.setInfoBar(Hex.parseHex4(bytes[39], bytes[40]));
@@ -177,11 +181,11 @@ public class ServerThread extends Thread implements DeviceListener {
 			}
 		}
 	}
-	
-	public String formatDate(Date date){
-	       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
-	       return sdf.format(date);
-	   }
+
+	public String formatDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+		return sdf.format(date);
+	}
 
 	private void clientClose() {
 		synchronized (dsockets) {
@@ -200,14 +204,14 @@ public class ServerThread extends Thread implements DeviceListener {
 
 	@Override
 	public void listChange(int areaId, int flag) {
-		//log.info("listChange:"+areaId+" "+flag);
+		// log.info("listChange:"+areaId+" "+flag);
 	}
 
 	@Override
 	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
 		if (!newObj) {
-			log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:" + oldValue
-					+ " newValue:" + newValue);
+			log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field
+					+ "  oldValue:" + oldValue + " newValue:" + newValue);
 			if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
 				SendSms.send("13358018613", device.getDeviceId(), "测试报警");
 			}
@@ -215,39 +219,57 @@ public class ServerThread extends Thread implements DeviceListener {
 				String alarmMsg = stringOfInfoBar((int) newValue);
 				switch ((int) newValue) {
 				case 4:
-					alarmMsg += "，当前"+device.getTemp()+"大于上限"+device.getTempUpLimit();
+					alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
 					break;
 				case 5:
-					alarmMsg += "，当前"+device.getTemp()+"小于下限"+device.getTempDownLimit();
+					alarmMsg += "，当前" + device.getTemp() + "小于下限" + device.getTempDownLimit();
 					break;
 				case 6:
-					alarmMsg += "，当前"+device.getHr()+"大于上限"+device.getHrUpLimit();
+					alarmMsg += "，当前" + device.getHr() + "大于上限" + device.getHrUpLimit();
 					break;
 				case 7:
-					alarmMsg += "，当前"+device.getHr()+"小于下限"+device.getHrDownLimit();
+					alarmMsg += "，当前" + device.getHr() + "小于下限" + device.getHrDownLimit();
 					break;
 				case 8:
-					alarmMsg += "，当前"+device.getDp()+"大于上限"+device.getDpUpLimit();
+					alarmMsg += "，当前" + device.getDp() + "大于上限" + device.getDpUpLimit();
 					break;
 				case 9:
-					alarmMsg += "，当前"+device.getDp()+"小于下限"+device.getDpDownLimit();
+					alarmMsg += "，当前" + device.getDp() + "小于下限" + device.getDpDownLimit();
 					break;
 				default:
 					break;
 				}
+
 				UserDao userDao = new UserDao();
 				List<User> userList = userDao.getList(device.getAreaId());
-				for(User user : userList){
-					if(user.getPhone()!=null&&!user.getPhone().equals("-")){
-						SendSms.send(user.getPhone(), device.getDeviceId(),alarmMsg);
+				for (User user : userList) {
+					if (user.getPhone() != null && !user.getPhone().equals("-")) {
+						SendSms.send(user.getPhone(), device.getDeviceId(), alarmMsg);
 					}
 				}
+				recordAlarm(device.getAreaId(), device.getDeviceId(), alarmMsg);
+
 			}
 
 		}
 
 	}
-	
+
+	private void recordAlarm(int areaId,int deviceId,String alarmMsg) {
+		DeviceDao deviceDao = new DeviceDao();
+		Device device = deviceDao.get(areaId, deviceId);
+		String alarmHistory = device.getAlarmHistory();
+		JSONArray alarmJsonArray = JSON.parseArray(alarmHistory);
+		if(alarmJsonArray.size()>=8){
+			alarmJsonArray.remove(0);
+		}
+		JSONObject alarmJson =  new JSONObject();
+		alarmJson.put("time", formatDate(new Date()));
+		alarmJson.put("msg", alarmMsg);
+		alarmJsonArray.add(alarmJson);
+		deviceDao.updateAlarm(areaId,deviceId,alarmJsonArray.toJSONString());
+	}
+
 	private String stringOfInfoBar(int infoBar) {
 		String infoBarStr = "";
 		switch (infoBar) {
@@ -297,7 +319,5 @@ public class ServerThread extends Thread implements DeviceListener {
 		}
 		return infoBarStr;
 	}
-	
-	 
 
 }

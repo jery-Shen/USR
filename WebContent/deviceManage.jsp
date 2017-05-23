@@ -44,19 +44,24 @@ $(function(){
             var that = this;
             that.$http.get('${pageContext.request.contextPath}/GetDeviceList',{params:{areaId:that.areaId}}).then(function(res){
                 if(res.body){
-                    console.info(res.body.result);
-                    that.devices = res.body.result;
-                    for(var i=0;i<that.devices.length;i++){
-                        that.devices[i] = formatDevice(that.devices[i]);
-                        that.devices[i].areaName = getAreaNameById(that.devices[i].areaId);
-                        if(that.devices[i].infoBar==0){
-                        	that.devices[i].trClass='text-muted';
-                        }else if(that.devices[i].infoBar==1){
-                        	that.devices[i].trClass='';
-                        }else{
-                        	that.devices[i].trClass='text-danger';
+                    var devices = res.body.result;
+                    for(var i=0;i<devices.length;i++){
+                        devices[i] = formatDevice(devices[i]);
+                        devices[i].areaName = getAreaNameById(devices[i].areaId);
+                        var alarms = JSON.parse(devices[i].alarmHistory);
+                        if(alarms.length>0){
+                        	devices[i].alarms = alarms;
                         }
+                        if(devices[i].infoBar==0){
+                        	devices[i].trClass='text-muted';
+                        }else if(devices[i].infoBar==1){
+                        	devices[i].trClass='';
+                        }else{
+                        	devices[i].trClass='text-danger';
+                        }
+                        that.devices.push(devices[i]);
                     }
+                    
                 }
             });
         },
@@ -287,20 +292,13 @@ $(function(){
 
                             </div>                  
                         </div>
-
-                         <table class="table table-bordered alarm-table">
+                         <table v-if="detailDeviceForm.alarms" class="table table-bordered alarm-table">
                             <caption>历史报警</caption>
                             <tbody>
-                                <tr><td>2017-03-01 04:54:32 <span>断电报警</span></td></tr>
-                                <tr><td>2017-03-12 14:54:12 <span>温度超高,当前26大于上限25</span></td></tr>
-                                <tr><td>2017-03-13 04:55:22 <span>模拟量采集通讯故障</span></td></tr>
-                                <tr><td>2017-04-12 05:24:48 <span>断电报警</span></td></tr>
-                                <tr><td>2017-04-02 11:54:26 <span>断电报警</span></td></tr>
-                                <tr><td>2017-05-02 08:54:41 <span>温度超高,当前28大于上限25</span></td></tr>
+                                <tr v-for="alarm in detailDeviceForm.alarms"><td>{{alarm.time}} <span>{{alarm.msg}}</span></td></tr>
                             </tbody>
                         </table>
 					</div>
-                
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
