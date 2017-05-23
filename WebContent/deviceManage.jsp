@@ -45,6 +45,7 @@ $(function(){
             that.$http.get('${pageContext.request.contextPath}/GetDeviceList',{params:{areaId:that.areaId}}).then(function(res){
                 if(res.body){
                     var devices = res.body.result;
+                    that.devices = [];
                     for(var i=0;i<devices.length;i++){
                         devices[i] = formatDevice(devices[i]);
                         devices[i].areaName = getAreaNameById(devices[i].areaId);
