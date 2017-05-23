@@ -25,7 +25,6 @@ import usr.work.server.Server;
 public class GetDeviceListSyn extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-   
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int areaId = 0;
 		try {

@@ -50,6 +50,7 @@ $(function(){
                         devices[i].areaName = getAreaNameById(devices[i].areaId);
                         var alarms = JSON.parse(devices[i].alarmHistory);
                         if(alarms.length>0){
+                        	alarms.reverse();
                         	devices[i].alarms = alarms;
                         }
                         if(devices[i].infoBar==0){

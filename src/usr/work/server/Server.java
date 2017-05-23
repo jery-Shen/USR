@@ -68,7 +68,10 @@ public class Server {
 							//System.out.println(Hex.printHexString(crcBytes));
 						}
 						if(deviceSocket.getUnReceiveTime()==-10){
-							new DeviceDao().deviceClose(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
+							if(deviceSocket.getDevice()!=null){
+								new DeviceDao().deviceCloseAndUpdate(deviceSocket.getDevice());
+								deviceSocket.setDevice(null);
+							}
 						}
 					}
 				}

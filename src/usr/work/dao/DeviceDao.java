@@ -421,6 +421,67 @@ public class DeviceDao {
 		}
 	}
 	
+	public void deviceCloseAndUpdate(Device device){
+		String sql ="update u_device set "
+				+ "u_online=0,u_update_time=now(),u_temp=?,u_temp_up_limit=?,u_temp_down_limit=?,u_temp_off=?,u_temp_really=?,"
+				+ "u_work_mode=?,u_air_count=?,u_in_wind_speed=?,u_out_wind_speed=?,"
+				+ "u_hr=?,u_hr_up_limit=?,u_hr_down_limit=?,u_hr_off=?,u_hr_really=?,"
+				+ "u_communicate_false=?,u_communicate_true=?,u_info_bar=?,u_state_switch=?,"
+				+ "u_dp=?,u_dp_up_limit=?,u_dp_down_limit=?,u_dp_off=?,u_dp_really=?,u_dp_target=?,u_akp_mode=?,"
+				+ "u_work_hour=?,u_work_second=?,u_converter_max=?,u_converter_min=?,u_converter_model=?,u_cycle_error=?,"
+				+ "u_alarm_cycle=?,u_temp_alarm_close=?,u_hr_alarm_close=?,u_dp_alarm_close=?,u_in_wind_alarm_cLose=?,"
+				+ "where u_area_id=? and u_device_id=?";
+		PreparedStatement pstmt =null;
+		Connection conn=null;
+		try {
+			conn=DBO.getConn();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, device.getTemp());
+			pstmt.setInt(2, device.getTempUpLimit());
+			pstmt.setInt(3, device.getTempDownLimit());
+			pstmt.setInt(4, device.getTempOff());
+			pstmt.setInt(5, device.getTempReally());
+			pstmt.setInt(6, device.getWorkMode());
+			pstmt.setInt(7, device.getAirCount());
+			pstmt.setInt(8, device.getInWindSpeed());
+			pstmt.setInt(9, device.getOutWindSpeed());
+			pstmt.setInt(10, device.getHr());
+			pstmt.setInt(11, device.getHrUpLimit());
+			pstmt.setInt(12, device.getHrDownLimit());
+			pstmt.setInt(13, device.getHrOff());
+			pstmt.setInt(14, device.getHrReally());
+			pstmt.setInt(15, device.getCommunicateFalse());
+			pstmt.setInt(16, device.getCommunicateTrue());
+			pstmt.setInt(17, device.getInfoBar());
+			pstmt.setInt(18, device.getStateSwitch());
+			pstmt.setInt(19, device.getDp());
+			pstmt.setInt(20, device.getDpUpLimit());
+			pstmt.setInt(21, device.getDpDownLimit());
+			pstmt.setInt(22, device.getDpOff());
+			pstmt.setInt(23, device.getDpReally());
+			pstmt.setInt(24, device.getDpTarget());
+			pstmt.setInt(25, device.getAkpMode());
+			pstmt.setInt(26, device.getWorkHour());
+			pstmt.setInt(27, device.getWorkSecond());
+			pstmt.setInt(28, device.getConverterMax());
+			pstmt.setInt(29, device.getConverterMin());
+			pstmt.setInt(30, device.getConverterModel());
+			pstmt.setInt(31, device.getCycleError());
+			pstmt.setInt(32, device.getAlarmCycle());
+			pstmt.setInt(33, device.getTempAlarmClose());
+			pstmt.setInt(34, device.getHrAlarmClose());
+			pstmt.setInt(35, device.getDpAlarmClose());
+			pstmt.setInt(36, device.getInWindAlarmClose());
+			pstmt.setInt(37, device.getAreaId());
+			pstmt.setInt(38, device.getDeviceId());
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			DBO.close(conn,pstmt);
+		}
+	}
+	
 	public void deviceClose(){
 		String sql ="update u_device set u_online=0";
 		PreparedStatement pstmt =null;
@@ -454,29 +515,29 @@ public class DeviceDao {
 		}
 	}
 	
-	public String formatDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
-		return sdf.format(date);
-	}
-	
-	private void recordAlarm(int areaId,int deviceId,String alarmMsg) {
-		DeviceDao deviceDao = new DeviceDao();
-		Device device = deviceDao.get(areaId, deviceId);
-		String alarmHistory = device.getAlarmHistory();
-		JSONArray alarmJsonArray = JSON.parseArray(alarmHistory);
-		if(alarmJsonArray.size()>=8){
-			alarmJsonArray.remove(0);
-		}
-		JSONObject alarmJson =  new JSONObject();
-		alarmJson.put("time", formatDate(new Date()));
-		alarmJson.put("msg", alarmMsg);
-		alarmJsonArray.add(alarmJson);
-		deviceDao.updateAlarm(areaId,deviceId,alarmJsonArray.toJSONString());
-	}
-	
-	public static void main(String[] args) {
-		new DeviceDao().recordAlarm(1, 1, "温度超高,当前28大于上限25");
-	}
+//	public String formatDate(Date date) {
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+//		return sdf.format(date);
+//	}
+//	
+//	private void recordAlarm(int areaId,int deviceId,String alarmMsg) {
+//		DeviceDao deviceDao = new DeviceDao();
+//		Device device = deviceDao.get(areaId, deviceId);
+//		String alarmHistory = device.getAlarmHistory();
+//		JSONArray alarmJsonArray = JSON.parseArray(alarmHistory);
+//		if(alarmJsonArray.size()>=8){
+//			alarmJsonArray.remove(0);
+//		}
+//		JSONObject alarmJson =  new JSONObject();
+//		alarmJson.put("time", formatDate(new Date()));
+//		alarmJson.put("msg", alarmMsg);
+//		alarmJsonArray.add(alarmJson);
+//		deviceDao.updateAlarm(areaId,deviceId,alarmJsonArray.toJSONString());
+//	}
+//	
+//	public static void main(String[] args) {
+//		new DeviceDao().recordAlarm(1, 1, "温度超高,当前28大于上限25");
+//	}
 	
 	
 

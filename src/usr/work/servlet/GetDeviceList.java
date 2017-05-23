@@ -30,41 +30,6 @@ public class GetDeviceList extends HttpServlet {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 		} catch (Exception e) {}
 		List<Device> deviceList = null;
-		
-		
-//		List<DeviceSocket> dsockets = Server.dsockets;
-//		JSONArray deviceJa = new JSONArray();
-//		synchronized (dsockets) {
-//			for (DeviceSocket ds : dsockets) {
-//				Device device = ds.getDevice();
-//				if (device != null && device.getDeviceId() != 0) {
-//					if(areaId==0){
-//						JSONObject deviceJo = new JSONObject();
-//						deviceJo.put("deviceId", device.getDeviceId());
-//						deviceJo.put("updateTime", device.getUpdateTime());
-//						deviceJo.put("temp", device.getTemp());
-//						deviceJo.put("hr", device.getHr());
-//						deviceJo.put("dp", device.getDp());
-//						deviceJo.put("infoBar", device.getInfoBar());
-//						deviceJo.put("online", device.getOnline());
-//						deviceJa.add(deviceJo);
-//					}else if(device.getAreaId()==areaId){
-//						JSONObject deviceJo = new JSONObject();
-//						deviceJo.put("deviceId", device.getDeviceId());
-//						deviceJo.put("updateTime", device.getUpdateTime());
-//						deviceJo.put("temp", device.getTemp());
-//						deviceJo.put("hr", device.getHr());
-//						deviceJo.put("dp", device.getDp());
-//						deviceJo.put("infoBar", device.getInfoBar());
-//						deviceJo.put("online", device.getOnline());
-//						deviceJa.add(deviceJo);
-//					}
-//					
-//				}
-//			}
-//		}
-//		response.getWriter().println(JSON.toJSONString(new Message(200, deviceJa)));
-
 		 
 		DeviceDao deviceDao = new DeviceDao();
 		if(areaId==0){

@@ -167,17 +167,20 @@ public class ServerThread extends Thread implements DeviceListener {
 		device.setAirSpeed40(Hex.parseHex4(bytes[127], bytes[128]));
 		device.setAirSpeed45(Hex.parseHex4(bytes[129], bytes[130]));
 		device.setAirSpeed50(Hex.parseHex4(bytes[131], bytes[132]));
-
 		device.setUpdateTime(formatDate(new Date()));
-
+		
 		if (device.getDeviceId() != 0 && device.getTemp() != 0) {
-			deviceSocket.setUnReceiveTime(1);
 			deviceSocket.setDevice(device);
-			try {
-				DeviceDao deviceDao = new DeviceDao();
-				deviceDao.saveOrUpdate(device);
-			} catch (Exception e) {
-				e.printStackTrace();
+			deviceSocket.setUnReceiveTime(1);
+			deviceSocket.setReceiveCount(deviceSocket.getReceiveCount()+1);
+			if(deviceSocket.getReceiveCount()<5 || deviceSocket.getReceiveCount()%360==0){
+				try {
+					log.info(device.getDeviceId() + ":saveOrUpdate");
+					DeviceDao deviceDao = new DeviceDao();
+					deviceDao.saveOrUpdate(device);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -192,14 +195,19 @@ public class ServerThread extends Thread implements DeviceListener {
 			dsockets.remove(deviceSocket);
 		}
 		log.info("disconnect sockets:" + dsockets.size());
+		if(deviceSocket.getDevice()!=null){
+			try {
+				new DeviceDao().deviceCloseAndUpdate(deviceSocket.getDevice());
+				this.listChange(deviceSocket.getAreaId(), -1);
+			} catch (Exception e) {}
+		}
 		try {
 			socket.close();
-			new DeviceDao().deviceClose(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
 		} catch (Exception exx) {
 			exx.printStackTrace();
 		}
-		this.listChange(deviceSocket.getAreaId(), -1);
 		isClientClose = true;
+		
 	}
 
 	@Override
