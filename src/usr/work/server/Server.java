@@ -39,7 +39,7 @@ public class Server implements DeviceListener{
         return instance;  
     }  
     
-    private List<Device> deviceList = new ArrayList<Device>();
+    public List<Device> deviceList = new ArrayList<Device>();
     private List<DeviceSocket> dsockets = new ArrayList<DeviceSocket>();
 
 	private ServerSocket serverSocket;
@@ -94,11 +94,12 @@ public class Server implements DeviceListener{
 								deviceSocket.setDevice(null);
 							}
 						}
-						
 						if(deviceSocket.getReceiveCount()%60==deviceSocket.getDeviceId()){
 							Device device = getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
-							log.info(deviceSocket.getDeviceId() + ":update");
-							new DeviceDao().update(device);
+							if(device.getEnable()==1){
+								log.info("update:"+deviceSocket.getDeviceId() +" "+ deviceSocket.getDeviceId() + "");
+								new DeviceDao().update(device);
+							}
 						}
 					}
 				}
@@ -138,7 +139,7 @@ public class Server implements DeviceListener{
 		timer.cancel();
 		DeviceDao deviceDao = new DeviceDao();
 		for(Device device : deviceList){
-			if(device.getOnline()==1){
+			if(device.getEnable()==1 && device.getOnline()==1){
 				device.setOnline(0);
 				deviceDao.update(device);
 			}
@@ -200,14 +201,22 @@ public class Server implements DeviceListener{
 	}
 	
 	public List<Device> getDeviceList(){
-		return deviceList;
+		List<Device> devices = new ArrayList<Device>();
+		if (deviceList.size() > 0) {
+			for (Device device : deviceList) {	
+				if(device.getEnable()==1){
+					devices.add(device);
+				}
+			}
+		}
+		return devices;
 	}
 	
 	public List<Device> getDeviceList(int areaId){
 		List<Device> devices = new ArrayList<Device>();
 		if (deviceList.size() > 0) {
 			for (Device device : deviceList) {	
-				if(device.getAreaId()==areaId){
+				if(device.getEnable()==1 && device.getAreaId()==areaId){
 					devices.add(device);
 				}
 			}

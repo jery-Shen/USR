@@ -24,7 +24,6 @@ public class ServerThread extends Thread{
 	DeviceSocket deviceSocket;
 	List<DeviceSocket> dsockets;
 	boolean isClientClose = false;
-	boolean newObj = false;
 
 	public ServerThread(DeviceSocket deviceSocket, List<DeviceSocket> dsockets) {
 		this.deviceSocket = deviceSocket;
@@ -168,7 +167,7 @@ public class ServerThread extends Thread{
 			exx.printStackTrace();
 		}
 		Device device = Server.getInstance().getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
-		if(device!=null&&device.getOnline()==1){
+		if(device!=null&& device.getEnable()==1 && device.getOnline()==1){
 			device.setOnline(0);
 			try {
 				new DeviceDao().update(device);

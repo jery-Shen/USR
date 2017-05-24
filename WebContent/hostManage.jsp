@@ -54,6 +54,7 @@ $(function(){
                     that.hosts = [];
                     for(var i=0;i<hosts.length;i++){
                     	hosts[i].areaName = getAreaNameById(hosts[i].areaId);
+                    	hosts[i].enableStr = hosts[i].enable ? '是' : '否';
                     	that.hosts.push(hosts[i]);
                     }
                 }
@@ -112,13 +113,15 @@ $(function(){
             });
         },
         deleteHost:function(host){
-            console.info(host);
-            var that = this;
-            that.$http.get('${pageContext.request.contextPath}/DeleteHost',{params:{areaId:host.areaId,deviceId:host.deviceId}}).then(function(res){
-                if(res.body&&res.body.status==200){
-                    this.getData();
-                }
-            });
+            if(confirm("确认删除")){
+            	var that = this;
+                that.$http.get('${pageContext.request.contextPath}/DeleteDevice',{params:{areaId:host.areaId,deviceId:host.deviceId}}).then(function(res){
+                    if(res.body&&res.body.status==200){
+                        this.getData();
+                    }
+                });
+            }
+            
         },
         searchFilter:function(){
             this.areaId = this.filterData.areaId;
@@ -191,6 +194,7 @@ $(function(){
                 	<th>区域号</th>
                 	<th>设备区域</th>
                     <th>设备号</th>
+                    <th>是否启动</th>
                     <th>mac地址</th>
                     <th>备注</th>
                     <th>操作</th>
@@ -202,6 +206,7 @@ $(function(){
                 	<td>{{host.areaId}}</td>
                 	<td>{{host.areaName}}</td>
                     <td>{{host.deviceId}}</td>
+                    <td>{{host.enableStr}}</td>
                     <td>{{host.mac}}</td>
                     <td>{{host.des}}</td>
                     <td><a href="javascript:;" @click="editHost(host)">编辑</a> <a href="javascript:;" @click="deleteHost(host)">删除</a></td>

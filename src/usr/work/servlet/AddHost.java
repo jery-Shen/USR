@@ -1,6 +1,7 @@
 package usr.work.servlet;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +14,8 @@ import com.alibaba.fastjson.JSON;
 import usr.work.bean.Device;
 import usr.work.bean.Message;
 import usr.work.dao.DeviceDao;
+import usr.work.server.Server;
+import usr.work.utils.Util;
 
 /**
  * Servlet implementation class AddHost
@@ -39,9 +42,13 @@ public class AddHost extends HttpServlet {
 			device.setMac(mac);
 			if(des==null) des="-";
 			device.setDes(des);
+			device.setEnable(1);
+			device.setAlarmHistory("[]");
+			device.setUpdateTime(Util.formatDate(new Date()));
 			DeviceDao hostDao = new DeviceDao();
 			if(hostDao.add(device)){
 				message.setStatus(200);
+				Server.getInstance().deviceList.add(device);
 			}else{
 				message.setStatus(215);
 				message.setError("该区域下的该设备Id已经存在");

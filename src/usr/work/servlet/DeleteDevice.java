@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 
 import usr.work.bean.Message;
 import usr.work.dao.DeviceDao;
+import usr.work.server.Server;
 
 /**
  * Servlet implementation class DeleteDevice
@@ -29,6 +30,8 @@ public class DeleteDevice extends HttpServlet {
 		} catch (Exception e) {}
 		Message message = new Message();
 		if(areaId!=0&&deviceId!=0){
+			Server.getInstance().getDevice(areaId, deviceId).setEnable(0);
+			Server.getInstance().getDevice(areaId, deviceId).setDeviceId(-1);
 			new DeviceDao().delete(areaId,deviceId);
 			message.setStatus(200);
 		}else{
