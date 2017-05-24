@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
-import usr.work.bean.Host;
+import usr.work.bean.Device;
 import usr.work.bean.Message;
-import usr.work.dao.HostDao;
+import usr.work.dao.DeviceDao;
 
 /**
  * Servlet implementation class GetHostList
@@ -27,12 +29,24 @@ public class GetHostList extends HttpServlet {
 		try {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 		} catch (Exception e) {}
-		List<Host> hostList = null;
-		HostDao hostDao = new HostDao();
+		List<Device> deviceList = null;
+		DeviceDao deviceDao = new DeviceDao();
 		if(areaId==0){
-			hostList = hostDao.getList();
+			deviceList = deviceDao.getList();
 		}else{
-			hostList = hostDao.getList(areaId);
+			deviceList = deviceDao.getList(areaId);
+		}
+		
+		JSONArray hostList = new JSONArray();
+		for(Device device : deviceList){
+			JSONObject host = new JSONObject();
+			host.put("areaId", device.getAreaId());
+			host.put("deviceId", device.getDeviceId());
+			host.put("mac", device.getMac());
+			host.put("des", device.getDes());
+			host.put("enable", device.getEnable());
+			host.put("online", device.getOnline());
+			hostList.add(host);
 		}
 		String resStr = JSON.toJSONString(new Message(200,hostList));
 		response.getWriter().println(resStr);

@@ -1,7 +1,6 @@
 package usr.work.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,13 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
-import usr.work.bean.Host;
 import usr.work.bean.Message;
 import usr.work.bean.User;
 import usr.work.dao.AreaDao;
-import usr.work.dao.HostDao;
 import usr.work.dao.UserDao;
 
 /**

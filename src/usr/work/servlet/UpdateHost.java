@@ -1,6 +1,7 @@
 package usr.work.servlet;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,9 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 
-import usr.work.bean.Host;
+import usr.work.bean.Device;
 import usr.work.bean.Message;
-import usr.work.dao.HostDao;
+import usr.work.dao.DeviceDao;
+import usr.work.server.Server;
 
 /**
  * Servlet implementation class UpdateHost
@@ -30,16 +32,15 @@ public class UpdateHost extends HttpServlet {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 			deviceId = Integer.parseInt(request.getParameter("deviceId"));
 		} catch (Exception e) {}
-		Host host = null;
+		Device device = null;
 		if(areaId!=0&&deviceId!=0&&mac!=null){
-			host = new Host();
-			host.setAreaId(areaId);
-			host.setDeviceId(deviceId);
-			host.setMac(mac);
+			device = Server.getInstance().getDevice(areaId, deviceId);
+			
+			device.setMac(mac);
 			if(des==null) des="-";
-			host.setDes(des);
-			HostDao hostDao = new HostDao();
-			if(hostDao.update(host)){
+			device.setDes(des);
+			DeviceDao deviceDao = new DeviceDao();
+			if(deviceDao.update(device)){
 				message.setStatus(200);
 			}else{
 				message.setStatus(215);

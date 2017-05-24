@@ -9,6 +9,9 @@ public class Device {
 	private int online;
 	private int areaId;
 	private int deviceId;
+	private int enable;
+	private String mac;
+	private String des;
 	private String deviceIp;
 	private String updateTime;
 	private int temp;				//温度显示值
@@ -571,6 +574,30 @@ public class Device {
 
 	public void setAlarmHistory(String alarmHistory) {
 		this.alarmHistory = alarmHistory;
+	}
+
+	public int getEnable() {
+		return enable;
+	}
+
+	public void setEnable(int enable) {
+		this.enable = enable;
+	}
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+
+	public String getDes() {
+		return des;
+	}
+
+	public void setDes(String des) {
+		this.des = des;
 	}
 
 }

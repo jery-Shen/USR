@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 
 import usr.work.bean.Message;
-import usr.work.dao.HostDao;
+import usr.work.dao.DeviceDao;
 
 /**
- * Servlet implementation class DeleteHost
+ * Servlet implementation class DeleteDevice
  */
-@WebServlet("/DeleteHost")
-public class DeleteHost extends HttpServlet {
+@WebServlet("/DeleteDevice")
+public class DeleteDevice extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,7 +29,7 @@ public class DeleteHost extends HttpServlet {
 		} catch (Exception e) {}
 		Message message = new Message();
 		if(areaId!=0&&deviceId!=0){
-			new HostDao().delete(areaId,deviceId);
+			new DeviceDao().delete(areaId,deviceId);
 			message.setStatus(200);
 		}else{
 			message.setStatus(210);

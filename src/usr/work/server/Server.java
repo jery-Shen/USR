@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
 import usr.work.dao.DeviceDao;
 import usr.work.utils.CRC;
@@ -27,8 +28,9 @@ public class Server {
         }  
         return instance;  
     }  
-
-	public List<DeviceSocket> dsockets = new ArrayList<>();
+    
+    public List<Device> deviceList = new ArrayList<Device>();
+	public List<DeviceSocket> dsockets = new ArrayList<DeviceSocket>();
 
 	private ServerSocket serverSocket;
 	private Timer timer;
@@ -148,6 +150,17 @@ public class Server {
 					if(deviceSocket.getAreaId()==areaId&&deviceSocket.getDeviceId()==deviceId){
 						return deviceSocket;
 					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public Device getDevice(int areaId,int deviceId){
+		if (deviceList.size() > 0) {
+			for (Device device : deviceList) {	
+				if(device.getAreaId()==areaId&&device.getDeviceId()==deviceId){
+					return device;
 				}
 			}
 		}

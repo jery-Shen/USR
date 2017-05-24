@@ -1,7 +1,6 @@
 package usr.work.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import usr.work.bean.Host;
+import usr.work.bean.Device;
 import usr.work.bean.Message;
 import usr.work.bean.User;
-import usr.work.dao.HostDao;
+import usr.work.dao.DeviceDao;
 import usr.work.dao.UserDao;
 
 /**
@@ -37,9 +37,20 @@ public class Login extends HttpServlet {
 			if(user!=null){
 				if(user.getLoginFlag()<10){
 					if(user.getUserPwd().equals(userPwd)){
-						HostDao hostDao = new HostDao();
+						DeviceDao deviceDao = new DeviceDao();
 						int areaId = user.getAreaId();
-						List<Host> hostList = areaId==-1?hostDao.getList():hostDao.getList(areaId);
+						List<Device> deviceList = areaId==-1?deviceDao.getList():deviceDao.getList(areaId);
+						JSONArray hostList = new JSONArray();
+						for(Device device : deviceList){
+							JSONObject host = new JSONObject();
+							host.put("areaId", device.getAreaId());
+							host.put("deviceId", device.getDeviceId());
+							host.put("mac", device.getMac());
+							host.put("des", device.getDes());
+							host.put("enable", device.getEnable());
+							host.put("online", device.getOnline());
+							hostList.add(host);
+						}
 						JSONObject res = new JSONObject();
 						res.put("user", user);
 						res.put("hostList", hostList);

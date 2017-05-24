@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 
-import usr.work.bean.Host;
+import usr.work.bean.Device;
 import usr.work.bean.Message;
-import usr.work.dao.HostDao;
+import usr.work.dao.DeviceDao;
 
 /**
  * Servlet implementation class AddHost
@@ -31,16 +31,16 @@ public class AddHost extends HttpServlet {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 			deviceId = Integer.parseInt(request.getParameter("deviceId"));
 		} catch (Exception e) {}
-		Host host = null;
+		Device device = null;
 		if(areaId!=0&&deviceId!=0&&mac!=null){
-			host = new Host();
-			host.setAreaId(areaId);
-			host.setDeviceId(deviceId);
-			host.setMac(mac);
+			device = new Device();
+			device.setAreaId(areaId);
+			device.setDeviceId(deviceId);
+			device.setMac(mac);
 			if(des==null) des="-";
-			host.setDes(des);
-			HostDao hostDao = new HostDao();
-			if(hostDao.add(host)){
+			device.setDes(des);
+			DeviceDao hostDao = new DeviceDao();
+			if(hostDao.add(device)){
 				message.setStatus(200);
 			}else{
 				message.setStatus(215);
