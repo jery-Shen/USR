@@ -94,7 +94,7 @@ public class Server implements DeviceListener{
 								deviceSocket.setDevice(null);
 							}
 						}
-						if(deviceSocket.getReceiveCount()%60==deviceSocket.getDeviceId()){
+						if(deviceSocket.getReceiveCount()%360==deviceSocket.getDeviceId()){
 							Device device = getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
 							if(device.getEnable()==1){
 								log.info("update:"+deviceSocket.getDeviceId() +" "+ deviceSocket.getDeviceId() + "");
