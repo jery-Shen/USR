@@ -25,7 +25,6 @@ public class UpdateHost extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String mac = request.getParameter("mac");
 		String des = request.getParameter("des");
-		System.out.println(des);
 		Message message = new Message();
 		int areaId = 0;
 		int deviceId = 0;
