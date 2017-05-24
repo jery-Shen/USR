@@ -88,7 +88,7 @@ public class TestAdd extends HttpServlet {
 		device.setAirSpeed50(Hex.parseHex4(bytes[131], bytes[132]));
 		
 		
-		deviceDao.saveOrUpdate(device);
+		deviceDao.update(device);
 		response.getWriter().print("success");
 	}
 

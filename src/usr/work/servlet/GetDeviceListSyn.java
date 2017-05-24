@@ -30,46 +30,42 @@ public class GetDeviceListSyn extends HttpServlet {
 		try {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 		} catch (Exception e) {}
-		List<DeviceSocket> dsockets = Server.getInstance().dsockets;
-		JSONArray deviceJa = new JSONArray();
-		synchronized (dsockets) {
-			for (DeviceSocket ds : dsockets) {
-				Device device = ds.getDevice();
-				if (device != null && device.getDeviceId() != 0) {
-					JSONObject deviceJo = new JSONObject();
-					deviceJo.put("deviceId", device.getDeviceId());
-					deviceJo.put("updateTime", device.getUpdateTime());
-					deviceJo.put("infoBar", device.getInfoBar());
-					deviceJo.put("online", device.getOnline());
-					deviceJo.put("temp", device.getTemp());
-					deviceJo.put("tempUpLimit", device.getTempUpLimit());
-					deviceJo.put("tempDownLimit", device.getTempDownLimit());
-					deviceJo.put("hr", device.getHr());
-					deviceJo.put("hrUpLimit", device.getHrUpLimit());
-					deviceJo.put("hrDownLimit", device.getHrDownLimit());
-					deviceJo.put("dp", device.getDp());
-					deviceJo.put("dpUpLimit", device.getDpUpLimit());
-					deviceJo.put("dpDownLimit", device.getDpDownLimit());
-					deviceJo.put("inWindSpeed", device.getInWindSpeed());
-					deviceJo.put("outWindSpeed", device.getOutWindSpeed());
-					deviceJo.put("airCount", device.getAirCount());
-					deviceJo.put("dpTarget", device.getDpTarget());
-					deviceJo.put("workMode", device.getWorkMode());
-					deviceJo.put("workHour", device.getWorkHour());
-					deviceJo.put("workSecond", device.getWorkSecond());
-					deviceJo.put("tempAlarmClose", device.getTempAlarmClose());
-					deviceJo.put("hrAlarmClose", device.getHrAlarmClose());
-					deviceJo.put("dpAlarmClose", device.getDpAlarmClose());
-					deviceJo.put("inWindAlarmClose", device.getInWindAlarmClose());
-					if(areaId==0){
-						deviceJa.add(deviceJo);
-					}else if(device.getAreaId()==areaId){
-						deviceJa.add(deviceJo);
-					}
-				}
-			}
+		List<Device> deviceList = null;
+		if(areaId==0){
+			deviceList = Server.getInstance().getDeviceList();
+		}else{
+			deviceList = Server.getInstance().getDeviceList(areaId);
 		}
-		response.getWriter().println(JSON.toJSONString(new Message(200, deviceJa)));
+		JSONArray deviceJa = new JSONArray();
+		for(Device device : deviceList){
+			JSONObject deviceJo = new JSONObject();
+			deviceJo.put("deviceId", device.getDeviceId());
+			deviceJo.put("updateTime", device.getUpdateTime());
+			deviceJo.put("infoBar", device.getInfoBar());
+			deviceJo.put("online", device.getOnline());
+			deviceJo.put("temp", device.getTemp());
+			deviceJo.put("tempUpLimit", device.getTempUpLimit());
+			deviceJo.put("tempDownLimit", device.getTempDownLimit());
+			deviceJo.put("hr", device.getHr());
+			deviceJo.put("hrUpLimit", device.getHrUpLimit());
+			deviceJo.put("hrDownLimit", device.getHrDownLimit());
+			deviceJo.put("dp", device.getDp());
+			deviceJo.put("dpUpLimit", device.getDpUpLimit());
+			deviceJo.put("dpDownLimit", device.getDpDownLimit());
+			deviceJo.put("inWindSpeed", device.getInWindSpeed());
+			deviceJo.put("outWindSpeed", device.getOutWindSpeed());
+			deviceJo.put("airCount", device.getAirCount());
+			deviceJo.put("dpTarget", device.getDpTarget());
+			deviceJo.put("workMode", device.getWorkMode());
+			deviceJo.put("workHour", device.getWorkHour());
+			deviceJo.put("workSecond", device.getWorkSecond());
+			deviceJo.put("tempAlarmClose", device.getTempAlarmClose());
+			deviceJo.put("hrAlarmClose", device.getHrAlarmClose());
+			deviceJo.put("dpAlarmClose", device.getDpAlarmClose());
+			deviceJo.put("inWindAlarmClose", device.getInWindAlarmClose());
+		}
+		String resStr = JSON.toJSONString(new Message(200,deviceJa));
+		response.getWriter().println(resStr);
 	}
 
 	/**

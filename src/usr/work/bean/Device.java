@@ -75,7 +75,7 @@ public class Device {
 	}
 	
 	public Device(DeviceListener deviceListener){
-		this.deviceListener = deviceListener;
+		this.setDeviceListener(deviceListener);
 	}
 
 	public int getID() {
@@ -139,8 +139,8 @@ public class Device {
 	}
 
 	public void setTempUpLimit(int tempUpLimit) {
-		if(deviceListener!=null&&this.tempUpLimit!=tempUpLimit){
-			deviceListener.objectChange(this, "tempUpLimit", this.tempUpLimit, tempUpLimit);
+		if(getDeviceListener()!=null&&this.tempUpLimit!=tempUpLimit){
+			getDeviceListener().objectChange(this, "tempUpLimit", this.tempUpLimit, tempUpLimit);
 		}
 		this.tempUpLimit = tempUpLimit;
 	}
@@ -150,8 +150,8 @@ public class Device {
 	}
 
 	public void setTempDownLimit(int tempDownLimit) {
-		if(deviceListener!=null&&this.tempDownLimit!=tempDownLimit){
-			deviceListener.objectChange(this, "tempDownLimit", this.tempDownLimit, tempDownLimit);
+		if(getDeviceListener()!=null&&this.tempDownLimit!=tempDownLimit){
+			getDeviceListener().objectChange(this, "tempDownLimit", this.tempDownLimit, tempDownLimit);
 		}
 		this.tempDownLimit = tempDownLimit;
 	}
@@ -217,8 +217,8 @@ public class Device {
 	}
 
 	public void setHrUpLimit(int hrUpLimit) {
-		if(deviceListener!=null&&this.hrUpLimit!=hrUpLimit){
-			deviceListener.objectChange(this, "hrUpLimit", this.hrUpLimit, hrUpLimit);
+		if(getDeviceListener()!=null&&this.hrUpLimit!=hrUpLimit){
+			getDeviceListener().objectChange(this, "hrUpLimit", this.hrUpLimit, hrUpLimit);
 		}
 		this.hrUpLimit = hrUpLimit;
 	}
@@ -228,8 +228,8 @@ public class Device {
 	}
 
 	public void setHrDownLimit(int hrDownLimit) {
-		if(deviceListener!=null&&this.hrDownLimit!=hrDownLimit){
-			deviceListener.objectChange(this, "hrDownLimit", this.hrDownLimit, hrDownLimit);
+		if(getDeviceListener()!=null&&this.hrDownLimit!=hrDownLimit){
+			getDeviceListener().objectChange(this, "hrDownLimit", this.hrDownLimit, hrDownLimit);
 		}
 		this.hrDownLimit = hrDownLimit;
 	}
@@ -277,8 +277,8 @@ public class Device {
 	}
 
 	public void setInfoBar(int infoBar) {
-		if(deviceListener!=null&&this.infoBar!=infoBar){
-			deviceListener.objectChange(this, "infoBar", this.infoBar, infoBar);
+		if(getDeviceListener()!=null&&this.infoBar!=infoBar){
+			getDeviceListener().objectChange(this, "infoBar", this.infoBar, infoBar);
 		}
 		this.infoBar = infoBar;
 	}
@@ -304,8 +304,8 @@ public class Device {
 	}
 
 	public void setDpUpLimit(int dpUpLimit) {
-		if(deviceListener!=null&&this.dpUpLimit!=dpUpLimit){
-			deviceListener.objectChange(this, "dpUpLimit", this.dpUpLimit, dpUpLimit);
+		if(getDeviceListener()!=null&&this.dpUpLimit!=dpUpLimit){
+			getDeviceListener().objectChange(this, "dpUpLimit", this.dpUpLimit, dpUpLimit);
 		}
 		this.dpUpLimit = dpUpLimit;
 	}
@@ -315,8 +315,8 @@ public class Device {
 	}
 
 	public void setDpDownLimit(int dpDownLimit) {
-		if(deviceListener!=null&&this.dpDownLimit!=dpDownLimit){
-			deviceListener.objectChange(this, "dpDownLimit", this.dpDownLimit, dpDownLimit);
+		if(getDeviceListener()!=null&&this.dpDownLimit!=dpDownLimit){
+			getDeviceListener().objectChange(this, "dpDownLimit", this.dpDownLimit, dpDownLimit);
 		}
 		this.dpDownLimit = dpDownLimit;
 	}
@@ -598,6 +598,14 @@ public class Device {
 
 	public void setDes(String des) {
 		this.des = des;
+	}
+
+	public DeviceListener getDeviceListener() {
+		return deviceListener;
+	}
+
+	public void setDeviceListener(DeviceListener deviceListener) {
+		this.deviceListener = deviceListener;
 	}
 
 }

@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.fastjson.JSON;
 
+import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
 import usr.work.bean.Message;
 import usr.work.server.Server;
@@ -28,27 +29,19 @@ public class OnLine extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
 		int areaId = 0;
 		try {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 		} catch (Exception e) {}
 		Message message = new Message(1);
-		if(areaId!=0){
-			List<DeviceSocket> dsockets = Server.getInstance().dsockets;
-			boolean hasDevice = false;
-			synchronized (dsockets) {
-				for (DeviceSocket ds : dsockets) {
-					if(ds.getAreaId()==areaId){
-						hasDevice = true;
-						break;
-					}
-				}
-			}
-			if(hasDevice){
-				message.setStatus(200);
-			}
+		List<Device> deviceList = null;
+		if(areaId==0){
+			deviceList = Server.getInstance().getDeviceList();
+		}else{
+			deviceList = Server.getInstance().getDeviceList(areaId);
+		}
+		if(deviceList.size()>0){
+			message.setSuccess(true);
 		}
 		response.getWriter().write(JSON.toJSONString(message));
 	}

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,12 +13,21 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import usr.work.bean.Device;
 import usr.work.bean.DeviceSocket;
+import usr.work.bean.User;
 import usr.work.dao.DeviceDao;
+import usr.work.dao.UserDao;
+import usr.work.listener.DeviceListener;
 import usr.work.utils.CRC;
+import usr.work.utils.SendSms;
+import usr.work.utils.Util;
 
-public class Server {
+public class Server implements DeviceListener{
 	
 	Log log = LogFactory.getLog(Server.class);
 	
@@ -29,11 +39,14 @@ public class Server {
         return instance;  
     }  
     
-    public List<Device> deviceList = new ArrayList<Device>();
-	public List<DeviceSocket> dsockets = new ArrayList<DeviceSocket>();
+    private List<Device> deviceList = new ArrayList<Device>();
+    private List<DeviceSocket> dsockets = new ArrayList<DeviceSocket>();
 
 	private ServerSocket serverSocket;
 	private Timer timer;
+	
+	
+	
 	private Server() {
 		
 	}
@@ -62,7 +75,6 @@ public class Server {
 	}
 	private void scanClient(int scanNum) {
 		synchronized (dsockets) {
-			//System.out.println("current connects:"+dsockets.size());
 			if (dsockets.size() > 0) {
 				for (DeviceSocket deviceSocket : dsockets) {						
 					int deviceId = deviceSocket.getDeviceId();
@@ -72,14 +84,21 @@ public class Server {
 							byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
 							byte[] crcBytes = CRC.getCRC(bytes);
 							sendOne(crcBytes, deviceSocket);
-							//System.out.println(Hex.printHexString(crcBytes));
+							//log.info(Hex.printHexString(crcBytes));
 						}
 						if(deviceSocket.getUnReceiveTime()==-10){
 							if(deviceSocket.getDevice()!=null){
-								new DeviceDao().deviceClose(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+								Device device = getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+								device.setOnline(0);
 								log.info(deviceSocket.getDeviceId() + ":deviceClose1");
 								deviceSocket.setDevice(null);
 							}
+						}
+						
+						if(deviceSocket.getReceiveCount()%60==deviceSocket.getDeviceId()){
+							Device device = getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+							log.info(deviceSocket.getDeviceId() + ":update");
+							new DeviceDao().update(device);
 						}
 					}
 				}
@@ -108,11 +127,24 @@ public class Server {
 
 	public void serveStart(int port,int scanNum) {
 		makeServe(port);
+		deviceList = new DeviceDao().getList();
+		for(Device device : deviceList){
+			device.setDeviceListener(this);
+		}
 		scanClientRepeat(scanNum);
 	}
 
 	public void serveStop(){
 		timer.cancel();
+		DeviceDao deviceDao = new DeviceDao();
+		for(Device device : deviceList){
+			if(device.getOnline()==1){
+				device.setOnline(0);
+				deviceDao.update(device);
+			}
+		}
+		deviceList.clear();
+		deviceList = null;
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e1) {
@@ -143,7 +175,7 @@ public class Server {
 		}
 	}
 	
-	private DeviceSocket getDeviceSocket(int areaId,int deviceId){
+	public DeviceSocket getDeviceSocket(int areaId,int deviceId){
 		synchronized (dsockets) {
 			if (dsockets.size() > 0) {
 				for (DeviceSocket deviceSocket : dsockets) {	
@@ -167,6 +199,22 @@ public class Server {
 		return null;
 	}
 	
+	public List<Device> getDeviceList(){
+		return deviceList;
+	}
+	
+	public List<Device> getDeviceList(int areaId){
+		List<Device> devices = new ArrayList<Device>();
+		if (deviceList.size() > 0) {
+			for (Device device : deviceList) {	
+				if(device.getAreaId()==areaId){
+					devices.add(device);
+				}
+			}
+		}
+		return devices;
+	}
+	
 	private void sleep(){
 		try {
 			Thread.sleep(500);
@@ -174,6 +222,71 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void listChange(int areaId, int flag) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
+		log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field
+				+ "  oldValue:" + oldValue + " newValue:" + newValue);
+		if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
+			SendSms.send("13358018613", device.getDeviceId(), "测试报警");
+		}
+		if (device.getOnline()==1 && field.endsWith("infoBar") && (int) newValue > 1) {
+			String alarmMsg = Util.stringOfInfoBar((int) newValue);
+			switch ((int) newValue) {
+			case 4:
+				alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
+				break;
+			case 5:
+				alarmMsg += "，当前" + device.getTemp() + "小于下限" + device.getTempDownLimit();
+				break;
+			case 6:
+				alarmMsg += "，当前" + device.getHr() + "大于上限" + device.getHrUpLimit();
+				break;
+			case 7:
+				alarmMsg += "，当前" + device.getHr() + "小于下限" + device.getHrDownLimit();
+				break;
+			case 8:
+				alarmMsg += "，当前" + device.getDp() + "大于上限" + device.getDpUpLimit();
+				break;
+			case 9:
+				alarmMsg += "，当前" + device.getDp() + "小于下限" + device.getDpDownLimit();
+				break;
+			default:
+				break;
+			}
+
+			UserDao userDao = new UserDao();
+			List<User> userList = userDao.getList(device.getAreaId());
+			for (User user : userList) {
+				if (user.getPhone() != null && !user.getPhone().equals("-")) {
+					SendSms.send(user.getPhone(), device.getDeviceId(), alarmMsg);
+				}
+			}
+			recordAlarm(device.getAreaId(), device.getDeviceId(), alarmMsg);
+
+		}
+		
+	}
+	
+	private void recordAlarm(int areaId,int deviceId,String alarmMsg) {
+		Device device = getDevice(areaId, deviceId);
+		String alarmHistory = device.getAlarmHistory();
+		JSONArray alarmJsonArray = JSON.parseArray(alarmHistory);
+		if(alarmJsonArray.size()>=8){
+			alarmJsonArray.remove(0);
+		}
+		JSONObject alarmJson =  new JSONObject();
+		alarmJson.put("time", Util.formatDate(new Date()));
+		alarmJson.put("msg", alarmMsg);
+		alarmJsonArray.add(alarmJson);
+		device.setAlarmHistory(alarmJsonArray.toJSONString());
 	}
 
 	

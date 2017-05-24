@@ -25,6 +25,7 @@ public class UpdateHost extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String mac = request.getParameter("mac");
 		String des = request.getParameter("des");
+		System.out.println(des);
 		Message message = new Message();
 		int areaId = 0;
 		int deviceId = 0;
@@ -35,9 +36,8 @@ public class UpdateHost extends HttpServlet {
 		Device device = null;
 		if(areaId!=0&&deviceId!=0&&mac!=null){
 			device = Server.getInstance().getDevice(areaId, deviceId);
-			
 			device.setMac(mac);
-			if(des==null) des="-";
+			if(des==null||des.equals("")) des="-";
 			device.setDes(des);
 			DeviceDao deviceDao = new DeviceDao();
 			if(deviceDao.update(device)){

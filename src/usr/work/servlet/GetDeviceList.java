@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 
 import usr.work.bean.Device;
 import usr.work.bean.Message;
-import usr.work.dao.DeviceDao;
+import usr.work.server.Server;
 
 /**
  * Servlet implementation class GetDeviceList
@@ -30,12 +30,10 @@ public class GetDeviceList extends HttpServlet {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 		} catch (Exception e) {}
 		List<Device> deviceList = null;
-		 
-		DeviceDao deviceDao = new DeviceDao();
 		if(areaId==0){
-			deviceList = deviceDao.getList();
+			deviceList = Server.getInstance().getDeviceList();
 		}else{
-			deviceList = deviceDao.getList(areaId);
+			deviceList = Server.getInstance().getDeviceList(areaId);
 		}
 		String resStr = JSON.toJSONString(new Message(200,deviceList));
 		response.getWriter().println(resStr);

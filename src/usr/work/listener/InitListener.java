@@ -13,8 +13,6 @@ import usr.work.server.Server;
  */
 @WebListener
 public class InitListener implements ServletContextListener {
-	
-	
 
 	@Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
@@ -24,13 +22,6 @@ public class InitListener implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent contextEvent) {
 		Server.getInstance().serveStop();
-//		try {
-//			new DeviceDao().deviceClose();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		
-
 	}
 
 }
