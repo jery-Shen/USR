@@ -63,6 +63,7 @@ public class GetDeviceListSyn extends HttpServlet {
 			deviceJo.put("hrAlarmClose", device.getHrAlarmClose());
 			deviceJo.put("dpAlarmClose", device.getDpAlarmClose());
 			deviceJo.put("inWindAlarmClose", device.getInWindAlarmClose());
+			deviceJa.add(deviceJo);
 		}
 		String resStr = JSON.toJSONString(new Message(200,deviceJa));
 		response.getWriter().println(resStr);

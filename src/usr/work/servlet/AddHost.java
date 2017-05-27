@@ -48,7 +48,9 @@ public class AddHost extends HttpServlet {
 			DeviceDao hostDao = new DeviceDao();
 			if(hostDao.add(device)){
 				message.setStatus(200);
-				Server.getInstance().deviceList.add(device);
+				synchronized (Server.getInstance().deviceList) {
+					Server.getInstance().deviceList.add(device);
+				}
 			}else{
 				message.setStatus(215);
 				message.setError("该区域下的该设备Id已经存在");

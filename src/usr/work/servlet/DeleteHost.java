@@ -10,15 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 
+import usr.work.bean.Device;
 import usr.work.bean.Message;
 import usr.work.dao.DeviceDao;
 import usr.work.server.Server;
 
 /**
- * Servlet implementation class DeleteDevice
+ * Servlet implementation class DeleteHost
  */
-@WebServlet("/DeleteDevice")
-public class DeleteDevice extends HttpServlet {
+@WebServlet("/DeleteHost")
+public class DeleteHost extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,8 +31,10 @@ public class DeleteDevice extends HttpServlet {
 		} catch (Exception e) {}
 		Message message = new Message();
 		if(areaId!=0&&deviceId!=0){
-			Server.getInstance().getDevice(areaId, deviceId).setEnable(0);
-			Server.getInstance().getDevice(areaId, deviceId).setDeviceId(-1);
+			Device device = Server.getInstance().getDevice(areaId, deviceId);
+			synchronized (Server.getInstance().deviceList) {
+				Server.getInstance().deviceList.remove(device);
+			}
 			new DeviceDao().delete(areaId,deviceId);
 			message.setStatus(200);
 		}else{

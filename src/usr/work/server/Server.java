@@ -24,31 +24,31 @@ import usr.work.dao.DeviceDao;
 import usr.work.dao.UserDao;
 import usr.work.listener.DeviceListener;
 import usr.work.utils.CRC;
+import usr.work.utils.Hex;
 import usr.work.utils.SendSms;
 import usr.work.utils.Util;
 
-public class Server implements DeviceListener{
-	
+public class Server implements DeviceListener {
+
 	Log log = LogFactory.getLog(Server.class);
-	
-	private static Server instance = null;  
-    public static synchronized Server getInstance() {  
-        if (instance == null) {  
-            instance = new Server();  
-        }  
-        return instance;  
-    }  
-    
-    public List<Device> deviceList = new ArrayList<Device>();
-    private List<DeviceSocket> dsockets = new ArrayList<DeviceSocket>();
+
+	private static Server instance = null;
+
+	public static synchronized Server getInstance() {
+		if (instance == null) {
+			instance = new Server();
+		}
+		return instance;
+	}
+
+	public List<Device> deviceList = new ArrayList<Device>();
+	private List<DeviceSocket> dsockets = new ArrayList<DeviceSocket>();
 
 	private ServerSocket serverSocket;
 	private Timer timer;
-	
-	
-	
+
 	private Server() {
-		
+
 	}
 
 	private void makeServe(final int port) {
@@ -57,7 +57,8 @@ public class Server implements DeviceListener{
 			public void run() {
 				try {
 					serverSocket = new ServerSocket(port);
-					//System.out.println(serverSocket.getInetAddress().getLocalHost() + ":" + serverSocket.getLocalPort());
+					// System.out.println(serverSocket.getInetAddress().getLocalHost()
+					// + ":" + serverSocket.getLocalPort());
 					while (true) {
 						Socket socket = serverSocket.accept();
 						DeviceSocket deviceSocket = new DeviceSocket();
@@ -73,31 +74,34 @@ public class Server implements DeviceListener{
 			}
 		}).start();
 	}
+
 	private void scanClient(int scanNum) {
 		synchronized (dsockets) {
 			if (dsockets.size() > 0) {
-				for (DeviceSocket deviceSocket : dsockets) {						
+				for (DeviceSocket deviceSocket : dsockets) {
 					int deviceId = deviceSocket.getDeviceId();
-					if(deviceId!=0){
-						deviceSocket.setUnReceiveTime(deviceSocket.getUnReceiveTime()-1);
-						if(!deviceSocket.isSending()){
+					if (deviceId != 0) {
+						deviceSocket.setUnReceiveTime(deviceSocket.getUnReceiveTime() - 1);
+						if (!deviceSocket.isSending()) {
 							byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
 							byte[] crcBytes = CRC.getCRC(bytes);
 							sendOne(crcBytes, deviceSocket);
-							//log.info(Hex.printHexString(crcBytes));
+							log.debug(Hex.printHexString(crcBytes));
 						}
-						if(deviceSocket.getUnReceiveTime()==-10){
-							if(deviceSocket.getDevice()!=null){
-								Device device = getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
+						if (deviceSocket.getUnReceiveTime() == -10) {
+							if (deviceSocket.getDevice() != null) {
+								Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
 								device.setOnline(0);
-								log.info(deviceSocket.getDeviceId() + ":deviceClose1");
+								log.info("deviceClose:device:" + deviceSocket.getAreaId() + " "
+										+ deviceSocket.getDeviceId());
 								deviceSocket.setDevice(null);
 							}
 						}
-						if(deviceSocket.getReceiveCount()%360==deviceSocket.getDeviceId()){
-							Device device = getDevice(deviceSocket.getAreaId(),deviceSocket.getDeviceId());
-							if(device.getEnable()==1){
-								log.info("update:"+deviceSocket.getDeviceId() +" "+ deviceSocket.getDeviceId() + "");
+						if (deviceSocket.getReceiveCount() % 360 == deviceSocket.getDeviceId()) {
+							Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
+							if (device.getEnable() == 1) {
+								log.debug("updateDB:" + deviceSocket.getDeviceId() + " " + deviceSocket.getDeviceId()
+										+ "");
 								new DeviceDao().update(device);
 							}
 						}
@@ -115,7 +119,7 @@ public class Server implements DeviceListener{
 			}
 		}, 2000, 1000);
 	}
-	
+
 	private void sendOne(byte[] bytes, DeviceSocket deviceSocket) {
 		try {
 			deviceSocket.getDataOut().write(bytes);
@@ -126,20 +130,20 @@ public class Server implements DeviceListener{
 		}
 	}
 
-	public void serveStart(int port,int scanNum) {
+	public void serveStart(int port, int scanNum) {
 		makeServe(port);
 		deviceList = new DeviceDao().getList();
-		for(Device device : deviceList){
+		for (Device device : deviceList) {
 			device.setDeviceListener(this);
 		}
 		scanClientRepeat(scanNum);
 	}
 
-	public void serveStop(){
+	public void serveStop() {
 		timer.cancel();
 		DeviceDao deviceDao = new DeviceDao();
-		for(Device device : deviceList){
-			if(device.getEnable()==1 && device.getOnline()==1){
+		for (Device device : deviceList) {
+			if (device.getEnable() == 1 && device.getOnline() == 1) {
 				device.setOnline(0);
 				deviceDao.update(device);
 			}
@@ -152,21 +156,22 @@ public class Server implements DeviceListener{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		try{
+		try {
 			serverSocket.close();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void sendUpdate(int areaId,int deviceId,List<byte[]> sendQueue){
+
+	public void sendUpdate(int areaId, int deviceId, List<byte[]> sendQueue) {
 		DeviceSocket deviceSocket = getDeviceSocket(areaId, deviceId);
-		if(deviceSocket!=null){
+		if (deviceSocket != null) {
 			deviceSocket.setSending(true);
 			sleep();
-			for(byte[] bytes:sendQueue){
+			for (byte[] bytes : sendQueue) {
 				byte[] crcBytes = CRC.getCRC(bytes);
-				//System.out.println(new Date().toLocaleString()+" areaId:"+areaId+",deviceId:"+deviceId+",send:"+Hex.printHexString(crcBytes));
+				log.debug(Util.formatDate(new Date()) + " areaId:" + areaId + ",deviceId:" + deviceId + ",send:"
+						+ Hex.printHexString(crcBytes));
 				deviceSocket = getDeviceSocket(areaId, deviceId);
 				sendOne(crcBytes, deviceSocket);
 				sleep();
@@ -175,12 +180,12 @@ public class Server implements DeviceListener{
 			deviceSocket.setSending(false);
 		}
 	}
-	
-	public DeviceSocket getDeviceSocket(int areaId,int deviceId){
+
+	public DeviceSocket getDeviceSocket(int areaId, int deviceId) {
 		synchronized (dsockets) {
 			if (dsockets.size() > 0) {
-				for (DeviceSocket deviceSocket : dsockets) {	
-					if(deviceSocket.getAreaId()==areaId&&deviceSocket.getDeviceId()==deviceId){
+				for (DeviceSocket deviceSocket : dsockets) {
+					if (deviceSocket.getAreaId() == areaId && deviceSocket.getDeviceId() == deviceId) {
 						return deviceSocket;
 					}
 				}
@@ -188,43 +193,43 @@ public class Server implements DeviceListener{
 		}
 		return null;
 	}
-	
-	public Device getDevice(int areaId,int deviceId){
+
+	public Device getDevice(int areaId, int deviceId) {
 		if (deviceList.size() > 0) {
-			for (Device device : deviceList) {	
-				if(device.getAreaId()==areaId&&device.getDeviceId()==deviceId){
+			for (Device device : deviceList) {
+				if (device.getAreaId() == areaId && device.getDeviceId() == deviceId) {
 					return device;
 				}
 			}
 		}
 		return null;
 	}
-	
-	public List<Device> getDeviceList(){
+
+	public List<Device> getDeviceList() {
 		List<Device> devices = new ArrayList<Device>();
 		if (deviceList.size() > 0) {
-			for (Device device : deviceList) {	
-				if(device.getEnable()==1){
+			for (Device device : deviceList) {
+				if (device.getEnable() == 1) {
 					devices.add(device);
 				}
 			}
 		}
 		return devices;
 	}
-	
-	public List<Device> getDeviceList(int areaId){
+
+	public List<Device> getDeviceList(int areaId) {
 		List<Device> devices = new ArrayList<Device>();
 		if (deviceList.size() > 0) {
-			for (Device device : deviceList) {	
-				if(device.getEnable()==1 && device.getAreaId()==areaId){
+			for (Device device : deviceList) {
+				if (device.getEnable() == 1 && device.getAreaId() == areaId) {
 					devices.add(device);
 				}
 			}
 		}
 		return devices;
 	}
-	
-	private void sleep(){
+
+	private void sleep() {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
@@ -236,17 +241,17 @@ public class Server implements DeviceListener{
 	@Override
 	public void listChange(int areaId, int flag) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
-		log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field
-				+ "  oldValue:" + oldValue + " newValue:" + newValue);
+		log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:"
+				+ oldValue + " newValue:" + newValue);
 		if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
 			SendSms.send("13358018613", device.getDeviceId(), "测试报警");
 		}
-		if (device.getOnline()==1 && field.endsWith("infoBar") && (int) newValue > 1) {
+		if (device.getOnline() == 1 && field.endsWith("infoBar") && (int) newValue > 1) {
 			String alarmMsg = Util.stringOfInfoBar((int) newValue);
 			switch ((int) newValue) {
 			case 4:
@@ -281,24 +286,21 @@ public class Server implements DeviceListener{
 			recordAlarm(device.getAreaId(), device.getDeviceId(), alarmMsg);
 
 		}
-		
+
 	}
-	
-	private void recordAlarm(int areaId,int deviceId,String alarmMsg) {
+
+	private void recordAlarm(int areaId, int deviceId, String alarmMsg) {
 		Device device = getDevice(areaId, deviceId);
 		String alarmHistory = device.getAlarmHistory();
 		JSONArray alarmJsonArray = JSON.parseArray(alarmHistory);
-		if(alarmJsonArray.size()>=8){
+		if (alarmJsonArray.size() >= 8) {
 			alarmJsonArray.remove(0);
 		}
-		JSONObject alarmJson =  new JSONObject();
+		JSONObject alarmJson = new JSONObject();
 		alarmJson.put("time", Util.formatDate(new Date()));
 		alarmJson.put("msg", alarmMsg);
 		alarmJsonArray.add(alarmJson);
 		device.setAlarmHistory(alarmJsonArray.toJSONString());
 	}
-
-	
-
 
 }

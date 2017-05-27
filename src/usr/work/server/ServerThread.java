@@ -49,9 +49,7 @@ public class ServerThread extends Thread{
 				} else {
 					buffer.write(bytes, 0, readLength);
 					byte[] data = buffer.toByteArray();
-					// System.out.println("read
-					// length:"+readLength+"pos:"+data.length+"
-					// data:"+Hex.printHexString(bytes));
+					//log.debug("read length:"+readLength+"pos:"+data.length+"data:"+Hex.printHexString(bytes))
 					if (deviceSocket.getDeviceId() == 0) {
 						if (data.length == 4 && data[data.length - 2] == (byte) 0xaa
 								&& data[data.length - 1] == (byte) 0x55) {
@@ -63,8 +61,8 @@ public class ServerThread extends Thread{
 						}
 					} else if (data.length >= 205) {
 						if (data[data.length - 4] == (byte) 0xaa && data[data.length - 3] == (byte) 0x55) {
-							// log.info("--------------------------");
-							// log.info(Hex.printHexString(data));
+							log.debug("--------------------------");
+							log.debug(Hex.printHexString(data));
 							byte[] crcData = new byte[data.length - 2];
 							System.arraycopy(data, 0, crcData, 0, data.length - 2);
 							if (CRC.getCRC(crcData)[data.length - 1] == data[data.length - 1]) {
@@ -171,7 +169,7 @@ public class ServerThread extends Thread{
 			device.setOnline(0);
 			try {
 				new DeviceDao().update(device);
-				log.info(deviceSocket.getDeviceId() + ":deviceClose2");
+				log.info("deviceClose:modal:"+deviceSocket.getAreaId() +" "+deviceSocket.getDeviceId());
 			} catch (Exception e) {}
 		}
 		isClientClose = true;

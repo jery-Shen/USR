@@ -25,13 +25,13 @@ public class UpdateHost extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String mac = request.getParameter("mac");
 		String des = request.getParameter("des");
-		Message message = new Message();
 		int areaId = 0;
 		int deviceId = 0;
 		try {
 			areaId = Integer.parseInt(request.getParameter("areaId"));
 			deviceId = Integer.parseInt(request.getParameter("deviceId"));
 		} catch (Exception e) {}
+		Message message = new Message();
 		Device device = null;
 		if(areaId!=0&&deviceId!=0&&mac!=null){
 			device = Server.getInstance().getDevice(areaId, deviceId);

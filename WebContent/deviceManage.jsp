@@ -214,7 +214,7 @@ $(function(){
                     <td>{{device.hr}}</td>
                     <td>{{device.dp}}</td>
                     <td>{{device.updateTime}}</td>
-                    <td><a href="javascript:;" @click="detailDevice(device)">详情</a> <a v-if="edit" href="javascript:;" @click="updateDeivce(device)">修改</a></td>
+                    <td><a v-if="device.online==1" href="javascript:;" @click="detailDevice(device)">详情</a> <a v-if="device.online==1" v-if="edit" href="javascript:;" @click="updateDeivce(device)">修改</a></td>
                 </tr>
             </tbody>
         </table>
