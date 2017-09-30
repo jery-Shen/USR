@@ -31,8 +31,7 @@ public class UpdateUserPwd extends HttpServlet {
 				message.setStatus(200);
 			}else{
 				message.setStatus(212);
-				message.setError("用户名密码错误");
-				
+				message.setError("旧密码错误");
 			}
 		}else{
 			message.setStatus(210);

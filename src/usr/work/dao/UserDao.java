@@ -193,6 +193,27 @@ public class UserDao {
 		return flag;
 	}
 	
+	public boolean clearFlag(String userName){
+		boolean flag = false;
+		String sql = "update u_user set u_login_flag=1 where u_user_name=?";
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		try {
+			conn = DBO.getConn();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userName);
+			int rs = pstmt.executeUpdate();
+			if(rs>0){
+				flag = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBO.close(conn, pstmt);
+		}
+		return flag;
+	}
+	
 	public List<User> getList(){
 		List<User> userList = new ArrayList<User>();
 		String sql = "select * from u_user";

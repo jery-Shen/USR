@@ -56,11 +56,11 @@ public class Login extends HttpServlet {
 						res.put("hostList", hostList);
 						message.setStatus(200);
 						message.setResult(res);
-						
+						userDao.clearFlag(userName);
 					}else{
-						userDao.updateFlag(userName);
 						message.setStatus(213);
 						message.setError("密码错误");
+						userDao.updateFlag(userName);
 					}
 				}else{
 					message.setStatus(215);
