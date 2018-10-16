@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import usr.work.bean.Device;
-import usr.work.bean.DeviceSocket;
 import usr.work.bean.Message;
 import usr.work.server.Server;
 
@@ -35,6 +34,19 @@ public class GetDeviceListSyn extends HttpServlet {
 			deviceList = Server.getInstance().getDeviceList();
 		}else{
 			deviceList = Server.getInstance().getDeviceList(areaId);
+		}
+		for(Device device : deviceList){
+			if(device.getTemp()>50){
+				device.setTemp(device.getTemp()/10);
+				device.setTempUpLimit(device.getTempUpLimit()/10);
+				device.setTempDownLimit(device.getTempDownLimit()/10);
+				device.setHr(device.getHr()/10);
+				device.setHrUpLimit(device.getHrUpLimit()/10);
+				device.setHrDownLimit(device.getHrDownLimit()/10);
+				device.setDp(device.getDp()/10);
+				device.setDpUpLimit(device.getDpUpLimit()/10);
+				device.setDpDownLimit(device.getDpDownLimit()/10);
+			}
 		}
 		JSONArray deviceJa = new JSONArray();
 		for(Device device : deviceList){
