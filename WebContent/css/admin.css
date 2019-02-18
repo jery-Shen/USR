@@ -44,3 +44,89 @@ body{
 .alarm-table span{
 	margin-left:15px;
 }
+.navbar-primary{
+	background:#128bed;
+}
+.navbar-primary .navbar-brand{
+	color:#fff;
+}
+
+.device-item{
+    width: 195px;
+    border: solid 1px #eee;
+    background: #fff;
+    float: left;
+    margin-left:15px;
+    margin-top: 15px;
+
+}
+.device-item-body{
+    padding: 15px 0px 10px 15px;
+}
+.device-item .head{
+    position: relative;
+}
+.device-item .title{
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    margin-left: 3px;
+    position: relative;
+    top: -6px;
+}
+.device-item .status{
+    position: absolute;
+    font-size: 12px;
+    padding: 2px 4px;
+    color: #128bed;
+    border:solid 1px #128bed;
+    border-radius: 4px;
+    left: 50px;
+    top: 26px;
+    transform-origin: left;
+    transform: scale(0.8);
+    word-break: keep-all;
+    white-space: nowrap;
+}
+.device-item img{
+    width: 45px;
+}
+.device-item .values{
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+}
+.device-item .values p{
+    margin: 0px;
+    line-height: 1.8;
+}
+.device-item .values span{
+    display: inline-block;
+}
+.device-item .v1{
+    width: 65px;
+}
+.device-item-bottom{
+    border-top: solid 1px #eee;
+    padding-right: 12px;
+    text-align: right;
+}
+.device-item-bottom .btn{
+    padding: 6px 2px;
+    color: #128bed;
+    font-weight: normal;
+}
+.device-item.text-danger .title{
+    color: #e64340;  
+}
+.device-item.text-danger .status{
+    color: #e64340;
+    border-color: #e64340;
+}
+.device-item.text-mute .title{
+    color: #999;
+}
+.device-item.text-mute .status{
+    color: #999;
+    border-color: #999; 
+}
