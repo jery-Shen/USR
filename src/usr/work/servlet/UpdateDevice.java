@@ -2,7 +2,6 @@ package usr.work.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,12 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.alibaba.fastjson.JSON;
 
-import usr.work.bean.DeviceSocket;
 import usr.work.bean.Message;
 import usr.work.server.Server;
-import usr.work.utils.CRC;
 import usr.work.utils.Hex;
 
 /**
@@ -25,7 +25,8 @@ import usr.work.utils.Hex;
 @WebServlet("/UpdateDevice")
 public class UpdateDevice extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	Log log = LogFactory.getLog(UpdateDevice.class);
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int areaId = parseInt(request.getParameter("areaId"));
 		int deviceId = parseInt(request.getParameter("deviceId"));
@@ -39,31 +40,38 @@ public class UpdateDevice extends HttpServlet {
 		int hrAlarmClose = parseInt(request.getParameter("hrAlarmClose"));
 		int dpAlarmClose = parseInt(request.getParameter("dpAlarmClose"));
 		int inWindAlarmClose = parseInt(request.getParameter("inWindAlarmClose"));
+		
 		Message message = new Message();
 		if(areaId!=-1&&deviceId!=-1){
 			List<byte[]> sendQueue = new ArrayList<byte[]>();
 			if(tempUpLimit!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x79,0x00,(byte) tempUpLimit};
+				byte[] pBytes = Hex.hex4toByte(tempUpLimit*10);
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x79,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(tempDownLimit!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7a,0x00,(byte) tempDownLimit};
+				byte[] pBytes = Hex.hex4toByte(tempDownLimit*10);
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7a,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(hrUpLimit!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7b,0x00,(byte) hrUpLimit};
+				byte[] pBytes = Hex.hex4toByte(hrUpLimit*10);
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7b,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(hrDownLimit!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7c,0x00,(byte) hrDownLimit};
+				byte[] pBytes = Hex.hex4toByte(hrDownLimit*10);
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7c,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(dpUpLimit!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7d,0x00,(byte) dpUpLimit};
+				byte[] pBytes = Hex.hex4toByte(dpUpLimit*10);
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7d,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(dpDownLimit!=-1){
-				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7e,0x00,(byte) dpDownLimit};
+				byte[] pBytes = Hex.hex4toByte(dpDownLimit*10);
+				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7e,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(tempAlarmClose!=-1){
@@ -90,6 +98,7 @@ public class UpdateDevice extends HttpServlet {
 		}
 		response.getWriter().write(JSON.toJSONString(message));
 	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

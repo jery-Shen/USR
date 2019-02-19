@@ -90,6 +90,7 @@ body{
 }
 .device-item img{
     width: 45px;
+    height: 45px;
 }
 .device-item .values{
     font-size: 13px;

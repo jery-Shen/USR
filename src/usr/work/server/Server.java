@@ -170,7 +170,7 @@ public class Server implements DeviceListener {
 			sleep();
 			for (byte[] bytes : sendQueue) {
 				byte[] crcBytes = CRC.getCRC(bytes);
-				log.debug(Util.formatDate(new Date()) + " areaId:" + areaId + ",deviceId:" + deviceId + ",send:"
+				log.info(Util.formatDate(new Date()) + " areaId:" + areaId + ",deviceId:" + deviceId + ",send:"
 						+ Hex.printHexString(crcBytes));
 				deviceSocket = getDeviceSocket(areaId, deviceId);
 				sendOne(crcBytes, deviceSocket);
@@ -246,8 +246,8 @@ public class Server implements DeviceListener {
 
 	@Override
 	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
-		log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:"
-				+ oldValue + " newValue:" + newValue);
+		//log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:"
+		//		+ oldValue + " newValue:" + newValue);
 		if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
 			SendSms.send("13358018613", device.getDeviceId(), "测试报警");
 		}
@@ -255,22 +255,22 @@ public class Server implements DeviceListener {
 			String alarmMsg = Util.stringOfInfoBar((int) newValue);
 			switch ((int) newValue) {
 			case 4:
-				alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
+				alarmMsg += "，当前" + device.getTemp()/10 + "大于上限" + device.getTempUpLimit()/10;
 				break;
 			case 5:
-				alarmMsg += "，当前" + device.getTemp() + "小于下限" + device.getTempDownLimit();
+				alarmMsg += "，当前" + device.getTemp()/10 + "小于下限" + device.getTempDownLimit()/10;
 				break;
 			case 6:
-				alarmMsg += "，当前" + device.getHr() + "大于上限" + device.getHrUpLimit();
+				alarmMsg += "，当前" + device.getHr()/10 + "大于上限" + device.getHrUpLimit()/10;
 				break;
 			case 7:
-				alarmMsg += "，当前" + device.getHr() + "小于下限" + device.getHrDownLimit();
+				alarmMsg += "，当前" + device.getHr()/10 + "小于下限" + device.getHrDownLimit()/10;
 				break;
 			case 8:
-				alarmMsg += "，当前" + device.getDp() + "大于上限" + device.getDpUpLimit();
+				alarmMsg += "，当前" + device.getDp()/10 + "大于上限" + device.getDpUpLimit()/10;
 				break;
 			case 9:
-				alarmMsg += "，当前" + device.getDp() + "小于下限" + device.getDpDownLimit();
+				alarmMsg += "，当前" + device.getDp()/10 + "小于下限" + device.getDpDownLimit()/10;
 				break;
 			default:
 				break;
