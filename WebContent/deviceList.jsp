@@ -18,7 +18,7 @@ if(session.getAttribute("user") == null){
 	<script src="js/vue-resource.min.js"></script>
 	<script src="js/admin.js?t=5"></script>
 </head>
-<body class="clearfix" style="background: #f8f8f8;padding: 20px;">
+<body class="clearfix" style="background: #f0f0f0;padding: 20px;">
 
 <script type="text/javascript">
 $(function(){
