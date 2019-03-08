@@ -4,7 +4,7 @@
 if(session.getAttribute("user") == null){
 	response.sendRedirect(request.getContextPath() + "/login.jsp");
 }else{
-	response.sendRedirect(request.getContextPath() + "/userManage.jsp");
+	response.sendRedirect(request.getContextPath() + "/deviceList.jsp");
 }
 %>
 <!DOCTYPE html>
