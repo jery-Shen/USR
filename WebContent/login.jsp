@@ -54,6 +54,8 @@
 								window.localStorage.setItem('rememberUserPwd','');
 							}
 							location.href = 'deviceManage.jsp';
+						} else if(res.status == 202) {
+							location.href = 'deviceList.jsp';
 						} else {
 							alert(res.error);
 						}

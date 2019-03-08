@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 if(session.getAttribute("user") == null){
-	//response.sendRedirect(request.getContextPath() + "/login.jsp");
+	response.sendRedirect(request.getContextPath() + "/login.jsp");
 }
 %>
 <!DOCTYPE html>
@@ -24,10 +24,14 @@ if(session.getAttribute("user") == null){
 $(function(){
 	var app = new Vue({
 	  created:function(){
-	  	this.getData();
+        this.getData();
 	  	this.edit = getQueryString('edit'); 
 	  	this.edit = 1;
 	  	this.areas = JSON.parse(window.localStorage.getItem('areas'));
+	  	var that = this;
+        setInterval(function() {
+        	that.getData();
+        }, 2000);
 	  },
 	  data: {
 	  	devices:[],
@@ -48,7 +52,6 @@ $(function(){
                     that.devices = [];
                     for(var i=0;i<devices.length;i++){
                         devices[i] = formatDevice(devices[i]);
-                        devices[i].areaName = getAreaNameById(devices[i].areaId);
                         var alarms = JSON.parse(devices[i].alarmHistory);
                         if(alarms.length>0){
                         	alarms.reverse();
@@ -158,93 +161,13 @@ $(function(){
 
 <div id="app" class="content">
     <div class="device-list">
-        <div class="device-item">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <span class="title">智控1</span>
-                    <span class="status">工作正常，按关闭键停止</span>  
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：10</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <span class="title">智控2</span>
-                    <span class="status">工作正常，按关闭键停止</span>
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：10</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        
-        <div class="device-item text-mute">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_mute.png">
-                    <span class="title">智控3</span>
-                    <span class="status">失去连接</span>
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：11</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-
         <div class="device-item" :class="device.trClass" v-for="device in devices">
             <div class="device-item-body">
                 <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
+                	<img v-if="!device.trClass" src="${pageContext.request.contextPath}/img/logo_blue.png">
+                    <img v-if="device.trClass=='text-muted'" src="${pageContext.request.contextPath}/img/logo_blue.png">
+                    <img v-if="device.trClass=='text-danger'" src="${pageContext.request.contextPath}/img/logo_danger.png">
+                    
                     <span class="title">智控{{device.deviceId}}</span>
                     <span class="status">{{device.infoBarStr}}</span>
                 </div>
@@ -266,196 +189,6 @@ $(function(){
             <div class="device-item-bottom">
                 <a @click="updateDeivce(device)" class="btn">编辑</a>
                 <a href="javascript:;" @click="detailDevice(device)" class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item text-danger">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_danger.png">
-                    <span class="title">智控8</span>
-                    <span class="status">温度超高</span>
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：45</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-
-        <div class="device-item text-mute">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_mute.png">
-                    <span class="title">智控9</span>
-                    <span class="status">待机状态，按开启键启动</span>
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：45</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item text-danger">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_danger.png">
-                    <span class="title">智控25</span>
-                    <span class="status">模拟量采集通讯故障</span>
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：12</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <span class="title">智控26</span>
-                    <span class="status">工作正常，按关闭键停止</span> 
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：10</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <span class="title">智控29</span>
-                    <span class="status">工作正常，按关闭键停止</span> 
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：11</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：21.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <span class="title">智控30</span>
-                    <span class="status">工作正常，按关闭键停止</span> 
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：10</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
-            </div>
-        </div>
-        <div class="device-item">
-            <div class="device-item-body">
-                <div class="head">
-                    <img src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <span class="title">智控31</span>
-                    <span class="status">工作正常，按关闭键停止</span> 
-                </div>
-                <div class="values">
-                    <p>
-                        <span class="v1">温度：10</span>
-                        <span class="v2">换气次数：20</span>
-                    </p>
-                    <p>
-                        <span class="v1">湿度：40</span>
-                        <span class="v2">进风速度：20.00</span>
-                    </p>
-                    <p>
-                        <span class="v1">压差：19</span>
-                        <span class="v2">目标压差：20</span>
-                    </p>
-                </div>
-            </div>
-            <div class="device-item-bottom">
-                <a  class="btn">编辑</a>
-                <a  class="btn">详情</a>
             </div>
         </div>
     </div>
@@ -490,36 +223,34 @@ $(function(){
                                 <tr><td>出风变频速度</td><td>{{detailDeviceForm.outWindSpeed}}</td></tr>
                             </tbody>
                         </table>
-                            </div>
-                                              
+                            </div>         
                             <div class="col-md-6">
                                 <table class="table  table-bordered">
-                                <caption>系统参数</caption>
-                            <tbody>
-                                <tr><td>刷新时间</td><td>{{detailDeviceForm.updateTime}}</td></tr>
-                                <tr><td>累计工作时间</td><td>{{detailDeviceForm.workTime}}</td></tr>
-                                <tr><td>压差目标值</td><td>{{detailDeviceForm.dpTarget}}</td></tr>
-                                <tr><td>正负压模式</td><td>{{detailDeviceForm.akpModeStr}}</td></tr>
-                                <tr><td>压差传感器型号选择</td><td>{{detailDeviceForm.converterModelStr}}</td></tr>
-                                <tr><td>变频器连续最高</td><td>{{detailDeviceForm.converterMax}}</td></tr>
-                                <tr><td>变频器连续最低</td><td>{{detailDeviceForm.converterMin}}</td></tr> 
-                                <tr><td>延周期检错</td><td>{{detailDeviceForm.cycleError}}</td></tr>
-                                <tr><td>温度报警</td><td>{{detailDeviceForm.tempAlarmCloseStr}}</td></tr>
-                                <tr><td>湿度报警</td><td>{{detailDeviceForm.hrAlarmCloseStr}}</td></tr>
-                                <tr><td>压差报警</td><td>{{detailDeviceForm.dpAlarmCloseStr}}</td></tr>
-                                <tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
-                                
-                                <!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
-                                <tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>
-                                <tr><td>18次换气速度:{{detailDeviceForm.airSpeed18}}</td><td>20次换气速度:{{detailDeviceForm.airSpeed20}}</td></tr>
-                                <tr><td>22次换气速度:{{detailDeviceForm.airSpeed22}}</td><td>24次换气速度:{{detailDeviceForm.airSpeed24}}</td></tr>
-                                <tr><td>26次换气速度:{{detailDeviceForm.airSpeed26}}</td><td>28次换气速度:{{detailDeviceForm.airSpeed28}}</td></tr>
-                                <tr><td>30次换气速度:{{detailDeviceForm.airSpeed30}}</td><td>35次换气速度:{{detailDeviceForm.airSpeed35}}</td></tr>
-                                <tr><td>40次换气速度:{{detailDeviceForm.airSpeed40}}</td><td>45次换气速度:{{detailDeviceForm.airSpeed45}}</td></tr>
-                                <tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr> -->
-                            </tbody>
-                        </table>
-
+                                        <caption>系统参数</caption>
+                                    <tbody>
+                                        <tr><td>刷新时间</td><td>{{detailDeviceForm.updateTime}}</td></tr>
+                                        <tr><td>累计工作时间</td><td>{{detailDeviceForm.workTime}}</td></tr>
+                                        <tr><td>压差目标值</td><td>{{detailDeviceForm.dpTarget}}</td></tr>
+                                        <tr><td>正负压模式</td><td>{{detailDeviceForm.akpModeStr}}</td></tr>
+                                        <tr><td>压差传感器型号选择</td><td>{{detailDeviceForm.converterModelStr}}</td></tr>
+                                        <tr><td>变频器连续最高</td><td>{{detailDeviceForm.converterMax}}</td></tr>
+                                        <tr><td>变频器连续最低</td><td>{{detailDeviceForm.converterMin}}</td></tr> 
+                                        <tr><td>延周期检错</td><td>{{detailDeviceForm.cycleError}}</td></tr>
+                                        <tr><td>温度报警</td><td>{{detailDeviceForm.tempAlarmCloseStr}}</td></tr>
+                                        <tr><td>湿度报警</td><td>{{detailDeviceForm.hrAlarmCloseStr}}</td></tr>
+                                        <tr><td>压差报警</td><td>{{detailDeviceForm.dpAlarmCloseStr}}</td></tr>
+                                        <tr><td>进风速度上限报警</td><td>{{detailDeviceForm.inWindAlarmCloseStr}}</td></tr>
+                                        
+                                        <!-- <tr><td>10次换气速度:{{detailDeviceForm.airSpeed10}}</td><td>12次换气速度:{{detailDeviceForm.airSpeed12}}</td></tr>
+                                        <tr><td>14次换气速度:{{detailDeviceForm.airSpeed14}}</td><td>16次换气速度:{{detailDeviceForm.airSpeed16}}</td></tr>
+                                        <tr><td>18次换气速度:{{detailDeviceForm.airSpeed18}}</td><td>20次换气速度:{{detailDeviceForm.airSpeed20}}</td></tr>
+                                        <tr><td>22次换气速度:{{detailDeviceForm.airSpeed22}}</td><td>24次换气速度:{{detailDeviceForm.airSpeed24}}</td></tr>
+                                        <tr><td>26次换气速度:{{detailDeviceForm.airSpeed26}}</td><td>28次换气速度:{{detailDeviceForm.airSpeed28}}</td></tr>
+                                        <tr><td>30次换气速度:{{detailDeviceForm.airSpeed30}}</td><td>35次换气速度:{{detailDeviceForm.airSpeed35}}</td></tr>
+                                        <tr><td>40次换气速度:{{detailDeviceForm.airSpeed40}}</td><td>45次换气速度:{{detailDeviceForm.airSpeed45}}</td></tr>
+                                        <tr><td>50次换气速度:{{detailDeviceForm.airSpeed50}}</td><td></td></tr> -->
+                                    </tbody>
+                                </table>
                             </div>                  
                         </div>
                          <table v-if="detailDeviceForm.alarms" class="table table-bordered alarm-table">

@@ -39,8 +39,8 @@ public class AdminLogin extends HttpServlet {
 							message.setStatus(200);
 							
 						}else{
-							message.setStatus(211);
-							message.setError("用户无权限，请联系管理员");
+							request.getSession().setAttribute("user", user);
+							message.setStatus(202);
 						}
 					}else{
 						userDao.updateFlag(userName);
