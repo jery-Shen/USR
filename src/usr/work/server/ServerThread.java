@@ -121,7 +121,9 @@ public class ServerThread extends Thread{
 
 		device.setCommunicateFalse(Hex.parseHex4(bytes[35], bytes[36]));
 		device.setCommunicateTrue(Hex.parseHex4(bytes[37], bytes[38]));
-		device.setInfoBar(Hex.parseHex4(bytes[39], bytes[40]));
+		
+		int infoBar = Hex.parseHex4(bytes[39], bytes[40]);
+		
 		device.setStateSwitch(Hex.parseHex4(bytes[41], bytes[42]));
 
 		device.setWorkHour(Hex.parseHex4(bytes[63], bytes[64])); //
@@ -193,6 +195,8 @@ public class ServerThread extends Thread{
 			device.setDpOff((float)dpOff/10);
 			device.setDpReally((float)dpReally/10);
 		}
+		
+		device.setInfoBar(infoBar);
 	}
 
 	

@@ -255,22 +255,22 @@ public class Server implements DeviceListener {
 			String alarmMsg = Util.stringOfInfoBar((int) newValue);
 			switch ((int) newValue) {
 			case 4:
-				alarmMsg += "，当前" + device.getTemp()/10 + "大于上限" + device.getTempUpLimit()/10;
+				alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
 				break;
 			case 5:
-				alarmMsg += "，当前" + device.getTemp()/10 + "小于下限" + device.getTempDownLimit()/10;
+				alarmMsg += "，当前" + device.getTemp() + "小于下限" + device.getTempDownLimit();
 				break;
 			case 6:
-				alarmMsg += "，当前" + device.getHr()/10 + "大于上限" + device.getHrUpLimit()/10;
+				alarmMsg += "，当前" + device.getHr() + "大于上限" + device.getHrUpLimit();
 				break;
 			case 7:
-				alarmMsg += "，当前" + device.getHr()/10 + "小于下限" + device.getHrDownLimit()/10;
+				alarmMsg += "，当前" + device.getHr() + "小于下限" + device.getHrDownLimit();
 				break;
 			case 8:
-				alarmMsg += "，当前" + device.getDp()/10 + "大于上限" + device.getDpUpLimit()/10;
+				alarmMsg += "，当前" + device.getDp() + "大于上限" + device.getDpUpLimit();
 				break;
 			case 9:
-				alarmMsg += "，当前" + device.getDp()/10 + "小于下限" + device.getDpDownLimit()/10;
+				alarmMsg += "，当前" + device.getDp() + "小于下限" + device.getDpDownLimit();
 				break;
 			default:
 				break;
