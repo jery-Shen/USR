@@ -248,7 +248,7 @@ public class Server implements DeviceListener {
 	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
 		//log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:"
 		//		+ oldValue + " newValue:" + newValue);
-		if (field.endsWith("tempUpLimit") && ((int) newValue) == 81) {
+		if (field.endsWith("tempUpLimit") && ((float) newValue) == 81) {
 			SendSms.send("13358018613", device.getDeviceId(), "测试报警");
 		}
 		if (device.getOnline() == 1 && field.endsWith("infoBar") && (int) newValue > 1) {

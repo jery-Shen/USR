@@ -91,28 +91,31 @@ public class ServerThread extends Thread{
 		
 		device.setOnline(1);
 		device.setDeviceIp(socket.getInetAddress().getHostAddress());
-		device.setTemp(Hex.parseHex4(bytes[3], bytes[4]));
-		device.setTempUpLimit(Hex.parseHex4(bytes[5], bytes[6]));
-		device.setTempDownLimit(Hex.parseHex4(bytes[7], bytes[8]));
-		device.setTempOff(Hex.parseHex4(bytes[9], bytes[10]));
-		device.setTempReally(Hex.parseHex4(bytes[11], bytes[12]));
+		
+		
+		int temp = Hex.parseHex4(bytes[3], bytes[4]);
+		int tempUpLimit = Hex.parseHex4(bytes[5], bytes[6]);
+		int tempDownLimit = Hex.parseHex4(bytes[7], bytes[8]);
+		int tempOff = Hex.parseHex4(bytes[9], bytes[10]);
+		int tempReally = Hex.parseHex4(bytes[11], bytes[12]);
 
 		device.setWorkMode(Hex.parseHex4(bytes[15], bytes[16]));
 		device.setAirCount(Hex.parseHex4(bytes[17], bytes[18])); //
 		device.setInWindSpeed(Hex.parseHex4(bytes[19], bytes[20])); //
 		device.setOutWindSpeed(Hex.parseHex4(bytes[21], bytes[22]));//
+		
+		int hr = Hex.parseHex4(bytes[23], bytes[24]);
+		int hrUpLimit = Hex.parseHex4(bytes[25], bytes[26]);
+		int hrDownLimit = Hex.parseHex4(bytes[27], bytes[28]);
+		int hrOff = Hex.parseHex4(bytes[29], bytes[30]);
+		int hrReally = Hex.parseHex4(bytes[31], bytes[32]);
 
-		device.setHr(Hex.parseHex4(bytes[23], bytes[24]));
-		device.setHrUpLimit(Hex.parseHex4(bytes[25], bytes[26]));
-		device.setHrDownLimit(Hex.parseHex4(bytes[27], bytes[28]));
-		device.setHrOff(Hex.parseHex4(bytes[29], bytes[30]));
-		device.setHrReally(Hex.parseHex4(bytes[31], bytes[32]));
-
-		device.setDp(Hex.parseHex4(bytes[43], bytes[44])); // >125
-		device.setDpUpLimit(Hex.parseHex4(bytes[45], bytes[46]));
-		device.setDpDownLimit(Hex.parseHex4(bytes[47], bytes[48]));
-		device.setDpOff(Hex.parseHex4(bytes[49], bytes[50]));
-		device.setDpReally(Hex.parseHex4(bytes[51], bytes[52]));
+		int dp = Hex.parseHex4(bytes[43], bytes[44]);
+		int dpUpLimit = Hex.parseHex4(bytes[45], bytes[46]);
+		int dpDownLimit = Hex.parseHex4(bytes[47], bytes[48]);
+		int dpOff = Hex.parseHex4(bytes[49], bytes[50]);
+		int dpReally = Hex.parseHex4(bytes[51], bytes[52]);
+		
 		device.setDpTarget(Hex.parseHex4(bytes[53], bytes[54]));
 		device.setAkpMode(Hex.parseHex4(bytes[55], bytes[56]));
 
@@ -150,6 +153,46 @@ public class ServerThread extends Thread{
 		device.setAirSpeed45(Hex.parseHex4(bytes[129], bytes[130]));
 		device.setAirSpeed50(Hex.parseHex4(bytes[131], bytes[132]));
 		device.setUpdateTime(Util.formatDate(new Date()));
+		
+		if(device.getTemp()<=50){
+			
+			device.setTemp(temp);
+			device.setTempUpLimit(tempUpLimit);
+			device.setTempDownLimit(tempDownLimit);
+			device.setTempOff(tempOff);
+			device.setTempReally(tempReally);
+			
+			device.setHr(hr);
+			device.setHrUpLimit(hrUpLimit);
+			device.setHrDownLimit(hrDownLimit);
+			device.setHrOff(hrOff);
+			device.setHrReally(hrReally);
+			
+			device.setDp(dp);
+			device.setDpUpLimit(dpUpLimit);
+			device.setDpDownLimit(dpDownLimit);
+			device.setDpOff(dpOff);
+			device.setDpReally(dpReally);
+			
+		}else{
+			device.setTemp((float)temp/10);
+			device.setTempUpLimit((float)tempUpLimit/10);
+			device.setTempDownLimit((float)tempDownLimit/10);
+			device.setTempOff((float)tempOff/10);
+			device.setTempReally((float)tempReally/10);
+			
+			device.setHr((float)hr/10);
+			device.setHrUpLimit((float)hrUpLimit/10);
+			device.setHrDownLimit((float)hrDownLimit/10);
+			device.setHrOff((float)hrOff/10);
+			device.setHrReally((float)hrReally/10);
+			
+			device.setDp((float)dp/10);
+			device.setDpUpLimit((float)dpUpLimit/10);
+			device.setDpDownLimit((float)dpDownLimit/10);
+			device.setDpOff((float)dpOff/10);
+			device.setDpReally((float)dpReally/10);
+		}
 	}
 
 	

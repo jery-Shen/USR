@@ -52,7 +52,7 @@ body{
 }
 
 .device-item{
-    width: 195px;
+    width: 210px;
     border: solid 1px #eee;
     background: #fff;
     float: left;
@@ -105,7 +105,7 @@ body{
     display: inline-block;
 }
 .device-item .v1{
-    width: 65px;
+    width: 72px;
 }
 .device-item-bottom{
     border-top: solid 1px #eee;

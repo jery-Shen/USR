@@ -16,7 +16,7 @@ if(session.getAttribute("user") == null){
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
-	<script src="js/admin.js?t=5"></script>
+	<script src="js/admin.js?t=6"></script>
 </head>
 <body class="clearfix" style="background: #f0f0f0;padding: 20px;">
 
