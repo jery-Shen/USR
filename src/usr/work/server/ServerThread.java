@@ -154,7 +154,7 @@ public class ServerThread extends Thread{
 		device.setAirSpeed50(Hex.parseHex4(bytes[131], bytes[132]));
 		device.setUpdateTime(Util.formatDate(new Date()));
 		
-		if(device.getTemp()<=50){
+		if(temp<=50){
 			
 			device.setTemp(temp);
 			device.setTempUpLimit(tempUpLimit);
