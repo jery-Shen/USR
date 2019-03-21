@@ -36,7 +36,7 @@ $(function(){
 	  data: {
 	  	devices:[],
 	  	areas:[],
-        areaId:0,
+        areaId:${user.areaId},
         edit:0,
 		detailDeviceForm:{ },
         updateDeviceForm:{ },
@@ -72,15 +72,6 @@ $(function(){
                     
                 }
             });
-        },
-        searchFilter:function(){
-            this.areaId = this.filterData.areaId;
-            this.getData();
-        },
-        clearFilter:function(){
-            this.filterData.areaId = 0;
-            this.areaId = 0;
-            this.getData();
         },
         detailDevice:function(device){
 	  		this.detailDeviceForm =  device;
