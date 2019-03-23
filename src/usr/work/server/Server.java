@@ -46,6 +46,7 @@ public class Server implements DeviceListener {
 
 	private ServerSocket serverSocket;
 	private Timer timer;
+	private Timer updateTimer;
 
 	private Server() {
 
@@ -89,20 +90,14 @@ public class Server implements DeviceListener {
 							log.debug(Hex.printHexString(crcBytes));
 						}
 						if (deviceSocket.getUnReceiveTime() == -10) {
-							if (deviceSocket.getDevice() != null) {
-								Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
+							Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
+							if (device != null) {
 								device.setOnline(0);
+								DeviceDao deviceDao = new DeviceDao();
+								deviceDao.update(device);
 								log.info("deviceClose:device:" + deviceSocket.getAreaId() + " "
 										+ deviceSocket.getDeviceId());
 								deviceSocket.setDevice(null);
-							}
-						}
-						if (deviceSocket.getReceiveCount() % 360 == deviceSocket.getDeviceId()) {
-							Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
-							if (device.getEnable() == 1) {
-								log.debug("updateDB:" + deviceSocket.getDeviceId() + " " + deviceSocket.getDeviceId()
-										+ "");
-								new DeviceDao().update(device);
 							}
 						}
 					}
@@ -118,6 +113,24 @@ public class Server implements DeviceListener {
 				scanClient(scanNum);
 			}
 		}, 2000, 1000);
+	}
+	
+	private void updateDeviceRepeat() {
+		updateTimer = new Timer();
+		updateTimer.schedule(new TimerTask() {
+			public void run() {
+				DeviceDao deviceDao = new DeviceDao();
+				synchronized (dsockets) {
+					for (Device device : deviceList) {
+						if (device.getEnable() == 1 && device.getOnline() == 1) {
+							deviceDao.update(device);
+							log.info("devicUpdate:device:" + device.getAreaId() + " "
+									+ device.getDeviceId());
+						}
+					}
+				}
+			} 
+		}, 20000, 20000);
 	}
 
 	private void sendOne(byte[] bytes, DeviceSocket deviceSocket) {
@@ -137,10 +150,12 @@ public class Server implements DeviceListener {
 			device.setDeviceListener(this);
 		}
 		scanClientRepeat(scanNum);
+		updateDeviceRepeat();
 	}
 
 	public void serveStop() {
 		timer.cancel();
+		updateTimer.cancel();
 		DeviceDao deviceDao = new DeviceDao();
 		for (Device device : deviceList) {
 			if (device.getEnable() == 1 && device.getOnline() == 1) {

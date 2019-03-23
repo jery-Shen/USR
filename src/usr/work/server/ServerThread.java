@@ -169,13 +169,7 @@ public class ServerThread extends Thread{
 			device.setHrDownLimit(hrDownLimit);
 			device.setHrOff(hrOff);
 			device.setHrReally(hrReally);
-			
-			device.setDp(dp);
-			device.setDpUpLimit(dpUpLimit);
-			device.setDpDownLimit(dpDownLimit);
-			device.setDpOff(dpOff);
-			device.setDpReally(dpReally);
-			
+				
 		}else{
 			device.setTemp((float)temp/10);
 			device.setTempUpLimit((float)tempUpLimit/10);
@@ -188,13 +182,13 @@ public class ServerThread extends Thread{
 			device.setHrDownLimit((float)hrDownLimit/10);
 			device.setHrOff((float)hrOff/10);
 			device.setHrReally((float)hrReally/10);
-			
-			device.setDp((float)dp/10);
-			device.setDpUpLimit((float)dpUpLimit/10);
-			device.setDpDownLimit((float)dpDownLimit/10);
-			device.setDpOff((float)dpOff/10);
-			device.setDpReally((float)dpReally/10);
 		}
+		
+		device.setDp(dp);
+		device.setDpUpLimit(dpUpLimit);
+		device.setDpDownLimit(dpDownLimit);
+		device.setDpOff(dpOff);
+		device.setDpReally(dpReally);
 		
 		device.setInfoBar(infoBar);
 	}

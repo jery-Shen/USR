@@ -18,8 +18,8 @@ import usr.work.server.Server;
 /**
  * Servlet implementation class GetDeviceDetail
  */
-@WebServlet("/GetDeviceDetail")
-public class GetDeviceDetail extends HttpServlet {
+@WebServlet("/SetDeviceTest")
+public class SetDeviceTest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
    
@@ -33,9 +33,15 @@ public class GetDeviceDetail extends HttpServlet {
 			deviceId = Integer.parseInt(request.getParameter("deviceId"));
 		} catch (Exception e) {}
 		Device device = null;
-		
-
 		device = Server.getInstance().getDevice(areaId,deviceId);
+		
+		int online = 0;
+		try {
+			online = Integer.parseInt(request.getParameter("online"));
+		} catch (Exception e) {}
+		
+		device.setOnline(online);
+		
         response.getWriter().println(JSON.toJSONString(new Message(200, device)));
 	}
 	
