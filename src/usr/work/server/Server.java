@@ -92,7 +92,7 @@ public class Server implements DeviceListener {
 						}
 						if (deviceSocket.getUnReceiveTime() == -10) {
 							Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
-							if (device != null) {
+							if (device != null && device.getOnline()==1) {
 								device.setOnline(0);
 								DeviceDao deviceDao = new DeviceDao();
 								deviceDao.update(device);
