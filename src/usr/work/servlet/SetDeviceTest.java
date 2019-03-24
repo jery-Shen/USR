@@ -12,7 +12,6 @@ import com.alibaba.fastjson.JSON;
 
 import usr.work.bean.Device;
 import usr.work.bean.Message;
-import usr.work.dao.DeviceDao;
 import usr.work.server.Server;
 
 /**

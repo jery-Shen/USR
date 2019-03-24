@@ -9,13 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.alibaba.fastjson.JSON;
 
 import usr.work.bean.Device;
-import usr.work.bean.DeviceSocket;
 import usr.work.bean.Message;
 import usr.work.server.Server;
 

@@ -82,6 +82,7 @@ public class Server implements DeviceListener {
 				for (DeviceSocket deviceSocket : dsockets) {
 					int deviceId = deviceSocket.getDeviceId();
 					if (deviceId != 0) {
+						//log.info("UnReceiveTime:"+deviceSocket.getUnReceiveTime());
 						deviceSocket.setUnReceiveTime(deviceSocket.getUnReceiveTime() - 1);
 						if (!deviceSocket.isSending()) {
 							byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
@@ -124,7 +125,7 @@ public class Server implements DeviceListener {
 					for (Device device : deviceList) {
 						if (device.getEnable() == 1 && device.getOnline() == 1) {
 							DeviceSocket dsocket = getDeviceSocket(device.getAreaId(), device.getDeviceId());
-							if(dsocket==null){
+							if(dsocket==null || dsocket.getDevice()==null){
 								device.setOnline(0);
 							}
 							deviceDao.update(device);
