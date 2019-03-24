@@ -123,6 +123,10 @@ public class Server implements DeviceListener {
 				synchronized (dsockets) {
 					for (Device device : deviceList) {
 						if (device.getEnable() == 1 && device.getOnline() == 1) {
+							DeviceSocket dsocket = getDeviceSocket(device.getAreaId(), device.getDeviceId());
+							if(dsocket==null){
+								device.setOnline(0);
+							}
 							deviceDao.update(device);
 							log.info("devicUpdate:device:" + device.getAreaId() + " "
 									+ device.getDeviceId());
@@ -130,7 +134,7 @@ public class Server implements DeviceListener {
 					}
 				}
 			} 
-		}, 20000, 20000);
+		}, 120000, 120000); //2分钟
 	}
 
 	private void sendOne(byte[] bytes, DeviceSocket deviceSocket) {

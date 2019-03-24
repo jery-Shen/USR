@@ -23,7 +23,9 @@
 .m-t{
    margin-top: 15px;
 }
-
+.text-gray{
+	color:#999;
+}
 .page>.page-info{
    float: right;
    margin: 20px 2px;
@@ -59,6 +61,12 @@ body{
     margin-left:15px;
     margin-top: 15px;
 
+}
+@media (max-width: 540px){
+	.device-item {
+	    width:100%;
+	    margin-left:0px;
+	}
 }
 .device-item-body{
     padding: 15px 0px 10px 15px;
@@ -116,6 +124,10 @@ body{
     padding: 6px 2px;
     color: #128bed;
     font-weight: normal;
+}
+.device-item-bottom .btn.disable{
+	color:#999;
+	cursor:not-allowed
 }
 .device-item.text-danger .title{
     color: #e64340;  

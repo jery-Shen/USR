@@ -35,12 +35,24 @@ public class SetDeviceTest extends HttpServlet {
 		Device device = null;
 		device = Server.getInstance().getDevice(areaId,deviceId);
 		
-		int online = 0;
-		try {
-			online = Integer.parseInt(request.getParameter("online"));
-		} catch (Exception e) {}
-		
-		device.setOnline(online);
+		String onlineParam = request.getParameter("online");
+		if(onlineParam != null){
+			int online = 0;
+			try {
+				online = Integer.parseInt(onlineParam);
+			} catch (Exception e) {}
+			
+			device.setOnline(online);
+		}
+		String infoBarParam = request.getParameter("infoBar");
+		if(infoBarParam != null){
+			int infoBar = 0;
+			try {
+				infoBar = Integer.parseInt(infoBarParam);
+			} catch (Exception e) {}
+			
+			device.setInfoBar(infoBar);
+		}
 		
         response.getWriter().println(JSON.toJSONString(new Message(200, device)));
 	}

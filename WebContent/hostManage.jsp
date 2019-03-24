@@ -83,6 +83,7 @@ $(function(){
                 alert('mac地址不能为空');
                 return;
             }
+            this.addHostForm.mac = this.addHostForm.mac.replace(/\W/g,'');
             var that = this;
             that.$http.post('${pageContext.request.contextPath}/AddHost',this.addHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){
@@ -103,6 +104,7 @@ $(function(){
                 alert('mac地址不能为空');
                 return;
             }
+            this.editHostForm.mac = this.editHostForm.mac.replace(/\W/g,'');
             var that = this;
             that.$http.post('${pageContext.request.contextPath}/UpdateHost',this.editHostForm,{emulateJSON:true,headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(res){
                 if(res.body.status==200){

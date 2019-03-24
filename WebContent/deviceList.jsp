@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%
 if(session.getAttribute("user") == null){
 	response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -16,9 +17,9 @@ if(session.getAttribute("user") == null){
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/vue-resource.min.js"></script>
-	<script src="js/admin.js?t=6"></script>
+	<script src="js/admin.js?t=7"></script>
 </head>
-<body class="clearfix" style="background: #f0f0f0;padding: 20px;">
+<body class="clearfix" style="background: #f0f0f0;padding: 10px;">
 
 <script type="text/javascript">
 $(function(){
@@ -57,15 +58,17 @@ $(function(){
                         	alarms.reverse();
                         	devices[i].alarms = alarms;
                         }
+                        
                         if(devices[i].infoBar==0){
-                        	devices[i].trClass='text-muted';
+                        	devices[i].trClass='text-mute';
                         }else if(devices[i].infoBar==1){
                         	devices[i].trClass='';
                         }else{
                         	devices[i].trClass='text-danger';
                         }
                         if(devices[i].online==0){
-                        	devices[i].trClass='text-muted';
+                        	devices[i].infoBarStr='失去连接';
+                        	devices[i].trClass='text-mute';
                         }
                         that.devices.push(devices[i]);
                     }
@@ -146,6 +149,7 @@ $(function(){
 				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="javascript:;">IVC联网设备检查程序</a>
+			
 		</div>
 	</div>
 </nav>
@@ -156,7 +160,7 @@ $(function(){
             <div class="device-item-body">
                 <div class="head">
                 	<img v-if="!device.trClass" src="${pageContext.request.contextPath}/img/logo_blue.png">
-                    <img v-if="device.trClass=='text-muted'" src="${pageContext.request.contextPath}/img/logo_blue.png">
+                    <img v-if="device.trClass=='text-mute'" src="${pageContext.request.contextPath}/img/logo_mute.png">
                     <img v-if="device.trClass=='text-danger'" src="${pageContext.request.contextPath}/img/logo_danger.png">
                     
                     <span class="title">智控{{device.deviceId}}</span>
@@ -177,9 +181,13 @@ $(function(){
                     </p>
                 </div>
             </div>
-            <div class="device-item-bottom">
+            <div v-if="device.online" class="device-item-bottom">
                 <a @click="updateDeivce(device)" class="btn">编辑</a>
                 <a href="javascript:;" @click="detailDevice(device)" class="btn">详情</a>
+            </div>
+            <div v-if="!device.online" class="device-item-bottom">
+                <span class="btn disable">编辑</span>
+                <span class="btn disable">详情</span>
             </div>
         </div>
     </div>
