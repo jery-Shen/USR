@@ -129,8 +129,7 @@ public class Server implements DeviceListener {
 								device.setOnline(0);
 							}
 							deviceDao.update(device);
-							log.info("devicUpdate:device:" + device.getAreaId() + " "
-									+ device.getDeviceId());
+							//log.info("devicUpdate:device:" + device.getAreaId() + " " + device.getDeviceId());
 						}
 					}
 				}
@@ -273,6 +272,9 @@ public class Server implements DeviceListener {
 		}
 		if (device.getOnline() == 1 && field.endsWith("infoBar") && (int) newValue > 1) {
 			String alarmMsg = Util.stringOfInfoBar((int) newValue);
+			if(alarmMsg==null || alarmMsg==""){
+				return;
+			}
 			switch ((int) newValue) {
 			case 4:
 				alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
