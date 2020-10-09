@@ -24,7 +24,7 @@ public class SendSms {
 			return;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
-			HttpUriRequest httpGet = RequestBuilder.get("https://ca.aliyuncs.com/gw/alidayu/sendSms")
+			HttpUriRequest httpGet = RequestBuilder.get("http://ca.aliyuncs.com/gw/alidayu/sendSms")
 					.addHeader("X-Ca-Key", "23388495").addHeader("X-Ca-Secret", "1bd13d861e7143c1d3761bf6c56a3f98")
 					.addParameter("rec_num", phone).addParameter("sms_template_code", "SMS_61045335")
 					.addParameter("sms_free_sign_name", "USR设备").addParameter("sms_type", "normal")

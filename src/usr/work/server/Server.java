@@ -273,38 +273,39 @@ public class Server implements DeviceListener {
 		}
 		if (device.getOnline() == 1 && field.endsWith("infoBar") && (int) newValue > 1) {
 			String alarmMsg = Util.stringOfInfoBar((int) newValue);
-			switch ((int) newValue) {
-			case 4:
-				alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
-				break;
-			case 5:
-				alarmMsg += "，当前" + device.getTemp() + "小于下限" + device.getTempDownLimit();
-				break;
-			case 6:
-				alarmMsg += "，当前" + device.getHr() + "大于上限" + device.getHrUpLimit();
-				break;
-			case 7:
-				alarmMsg += "，当前" + device.getHr() + "小于下限" + device.getHrDownLimit();
-				break;
-			case 8:
-				alarmMsg += "，当前" + device.getDp() + "大于上限" + device.getDpUpLimit();
-				break;
-			case 9:
-				alarmMsg += "，当前" + device.getDp() + "小于下限" + device.getDpDownLimit();
-				break;
-			default:
-				break;
-			}
-
-			UserDao userDao = new UserDao();
-			List<User> userList = userDao.getList(device.getAreaId());
-			for (User user : userList) {
-				if (user.getPhone() != null && !user.getPhone().equals("-")) {
-					SendSms.send(user.getPhone(), device.getDeviceId(), alarmMsg);
+			if(alarmMsg!=""){
+				switch ((int) newValue) {
+				case 4:
+					alarmMsg += "，当前" + device.getTemp() + "大于上限" + device.getTempUpLimit();
+					break;
+				case 5:
+					alarmMsg += "，当前" + device.getTemp() + "小于下限" + device.getTempDownLimit();
+					break;
+				case 6:
+					alarmMsg += "，当前" + device.getHr() + "大于上限" + device.getHrUpLimit();
+					break;
+				case 7:
+					alarmMsg += "，当前" + device.getHr() + "小于下限" + device.getHrDownLimit();
+					break;
+				case 8:
+					alarmMsg += "，当前" + device.getDp() + "大于上限" + device.getDpUpLimit();
+					break;
+				case 9:
+					alarmMsg += "，当前" + device.getDp() + "小于下限" + device.getDpDownLimit();
+					break;
+				default:
+					break;
 				}
+	
+				UserDao userDao = new UserDao();
+				List<User> userList = userDao.getList(device.getAreaId());
+				for (User user : userList) {
+					if (user.getPhone() != null && !user.getPhone().equals("-")) {
+						SendSms.send(user.getPhone(), device.getDeviceId(), alarmMsg);
+					}
+				}
+				recordAlarm(device.getAreaId(), device.getDeviceId(), alarmMsg);
 			}
-			recordAlarm(device.getAreaId(), device.getDeviceId(), alarmMsg);
-
 		}
 
 	}
