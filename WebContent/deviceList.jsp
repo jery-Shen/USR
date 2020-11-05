@@ -169,15 +169,15 @@ $(function(){
                 <div class="values">
                     <p>
                         <span class="v1">温度：{{device.temp}}</span>
-                        <span class="v2">换气次数：20</span>
+                        <span class="v2">换气次数：{{device.airCount}}</span>
                     </p>
                     <p>
                         <span class="v1">湿度：{{device.hr}}</span>
-                        <span class="v2">进风速度：20.00</span>
+                        <span class="v2">进风速度：{{device.inWindSpeed}}</span>
                     </p>
                     <p>
                         <span class="v1">压差：{{device.dp}}</span>
-                        <span class="v2">目标压差：20</span>
+                        <span class="v2">目标压差：{{device.dpTarget}}</span>
                     </p>
                 </div>
             </div>
