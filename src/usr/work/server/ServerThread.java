@@ -36,6 +36,7 @@ public class ServerThread extends Thread{
 		DataInputStream dataIn;
 		synchronized (dsockets) {
 			log.info("connect sockets:" + dsockets.size());
+			System.out.println("connect sockets:" + dsockets.size());
 		}
 		try {
 			dataIn = new DataInputStream(socket.getInputStream());
