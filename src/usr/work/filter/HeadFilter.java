@@ -34,10 +34,9 @@ public class HeadFilter implements  Filter{
 				||req.getRequestURI().contains("/Update")||req.getRequestURI().contains("/Delete")){
 			res.setHeader("Access-Control-Allow-Origin", "*");
 			res.setHeader("Content-Type", "application/json; charset=utf8"); 
-		}else{
+		}else if(!(req.getRequestURI().contains(".css") || req.getRequestURI().contains(".js"))){
 			res.setHeader("Content-Type", "text/html; charset=utf8"); 
 		}
-		
 		chain.doFilter(request, response);
 	}
 
