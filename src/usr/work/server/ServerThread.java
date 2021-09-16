@@ -75,7 +75,8 @@ public class ServerThread extends Thread{
 				}
 			}
 		} catch (Exception esx) {
-			// esx.printStackTrace();
+			log.info("-----------thread catch--------------");
+			log.error(esx);
 		} finally {
 			if (!isClientClose) {
 				clientClose();

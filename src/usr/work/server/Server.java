@@ -70,6 +70,7 @@ public class Server implements DeviceListener {
 						serverThread.start();
 					}
 				} catch (Exception e) {
+					log.error(e);
 					// TODO: handle exception
 				}
 			}
@@ -111,6 +112,7 @@ public class Server implements DeviceListener {
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
+				log.info("scanClient");
 				scanClient(scanNum);
 			}
 		}, 2000, 1000);
