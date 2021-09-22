@@ -112,10 +112,16 @@ public class Server implements DeviceListener {
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
-				log.info("scanClient");
-				scanClient(scanNum);
+				log.info("--scanClient--");
+				try {
+					scanClient(scanNum);
+				} catch (Exception e) {
+					log.info("-----------scanClientRepeat catch--------------");
+					log.error(e);
+				}
+				
 			}
-		}, 2000, 1000);
+		}, 2000);
 	}
 	
 	private void updateDeviceRepeat() {
@@ -160,6 +166,7 @@ public class Server implements DeviceListener {
 	}
 
 	public void serveStop() {
+		log.info("---------serveStop----------");
 		timer.cancel();
 		updateTimer.cancel();
 		DeviceDao deviceDao = new DeviceDao();
@@ -181,6 +188,7 @@ public class Server implements DeviceListener {
 			serverSocket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
