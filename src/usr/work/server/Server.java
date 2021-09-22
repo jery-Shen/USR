@@ -83,7 +83,7 @@ public class Server implements DeviceListener {
 				for (DeviceSocket deviceSocket : dsockets) {
 					int deviceId = deviceSocket.getDeviceId();
 					if (deviceId != 0) {
-						//log.info("UnReceiveTime:"+deviceSocket.getUnReceiveTime());
+						// log.info("UnReceiveTime:"+deviceSocket.getUnReceiveTime());
 						deviceSocket.setUnReceiveTime(deviceSocket.getUnReceiveTime() - 1);
 						if (!deviceSocket.isSending()) {
 							byte[] bytes = new byte[] { (byte) deviceId, 0x03, 0x02, 0x58, 0x00, 0x64 };
@@ -93,7 +93,7 @@ public class Server implements DeviceListener {
 						}
 						if (deviceSocket.getUnReceiveTime() == -10) {
 							Device device = getDevice(deviceSocket.getAreaId(), deviceSocket.getDeviceId());
-							if (device != null && device.getOnline()==1) {
+							if (device != null && device.getOnline() == 1) {
 								device.setOnline(0);
 								DeviceDao deviceDao = new DeviceDao();
 								deviceDao.update(device);
@@ -110,20 +110,26 @@ public class Server implements DeviceListener {
 
 	private void scanClientRepeat(int scanNum) {
 		timer = new Timer();
-		timer.schedule(new TimerTask() {
-			public void run() {
-				log.info("--scanClient--");
-				try {
-					scanClient(scanNum);
-				} catch (Exception e) {
-					log.info("-----------scanClientRepeat catch--------------");
-					log.error(e);
+		try {
+			timer.schedule(new TimerTask() {
+				public void run() {
+					log.info("--scanClient--");
+					try {
+						scanClient(scanNum);
+					} catch (Exception exc) {
+						log.info("-----------TimerTask catch--------------");
+						log.error(exc);
+					}
+
 				}
-				
-			}
-		}, 2000);
+			}, 2000, 2000);
+		} catch (Exception e) {
+			log.info("-----------scanClientRepeat catch--------------");
+			log.error(e);
+		}
+		
 	}
-	
+
 	private void updateDeviceRepeat() {
 		updateTimer = new Timer();
 		updateTimer.schedule(new TimerTask() {
@@ -133,16 +139,17 @@ public class Server implements DeviceListener {
 					for (Device device : deviceList) {
 						if (device.getEnable() == 1 && device.getOnline() == 1) {
 							DeviceSocket dsocket = getDeviceSocket(device.getAreaId(), device.getDeviceId());
-							if(dsocket==null || dsocket.getDevice()==null){
+							if (dsocket == null || dsocket.getDevice() == null) {
 								device.setOnline(0);
 							}
 							deviceDao.update(device);
-							//log.info("devicUpdate:device:" + device.getAreaId() + " " + device.getDeviceId());
+							// log.info("devicUpdate:device:" +
+							// device.getAreaId() + " " + device.getDeviceId());
 						}
 					}
 				}
-			} 
-		}, 120000, 120000); //2分钟
+			}
+		}, 120000, 120000); // 2分钟
 	}
 
 	private void sendOne(byte[] bytes, DeviceSocket deviceSocket) {
@@ -275,14 +282,15 @@ public class Server implements DeviceListener {
 
 	@Override
 	public void objectChange(Device device, String field, Object oldValue, Object newValue) {
-		//log.info("objectChange:" + device.getAreaId() + " " + device.getDeviceId() + " field:" + field + "  oldValue:"
-		//		+ oldValue + " newValue:" + newValue);
+		// log.info("objectChange:" + device.getAreaId() + " " +
+		// device.getDeviceId() + " field:" + field + " oldValue:"
+		// + oldValue + " newValue:" + newValue);
 		if (field.endsWith("tempUpLimit") && ((float) newValue) == 81) {
 			SendSms.send("13358018613", device.getDeviceId(), "测试报警");
 		}
 		if (device.getOnline() == 1 && field.endsWith("infoBar") && (int) newValue > 1) {
 			String alarmMsg = Util.stringOfInfoBar((int) newValue);
-			if(alarmMsg==null || alarmMsg==""){
+			if (alarmMsg == null || alarmMsg == "") {
 				return;
 			}
 			switch ((int) newValue) {
