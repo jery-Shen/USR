@@ -52,7 +52,7 @@ public class Server implements DeviceListener {
 
 	}
 
-	private void makeServe(final int port) {
+	private void makeServe(int port) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -108,7 +108,7 @@ public class Server implements DeviceListener {
 		}
 	}
 
-	private void scanClientRepeat(int scanNum) {
+	private void scanClientRepeat(final int scanNum) {
 		timer = new Timer();
 		try {
 			timer.schedule(new TimerTask() {
