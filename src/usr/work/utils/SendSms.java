@@ -17,11 +17,10 @@ import com.aliyuncs.profile.DefaultProfile;
 
 public class SendSms {
 
-	Log log = LogFactory.getLog(SendSms.class);
+	static Log log = LogFactory.getLog(SendSms.class);
 
 	public static synchronized void send(String phone, int deviceId, String alarmMsg) {
 
-		System.out.println(phone);
 		if (!isPhone(phone))
 			return;
 
@@ -40,13 +39,13 @@ public class SendSms {
 		request.setSysDomain("dysmsapi.aliyuncs.com");
 		request.setSysVersion("2017-05-25");
 		request.setSysAction("SendSms");
-		request.putQueryParameter("PhoneNumbers", "13358018613");
+		request.putQueryParameter("PhoneNumbers", phone);
 		request.putQueryParameter("SignName", "USR设备");
 		request.putQueryParameter("TemplateCode", "SMS_61045335");
 		request.putQueryParameter("TemplateParam", "{'deviceId':'" + deviceId + "','infoBar':'" + alarmMsg + "'}");
 		try {
 			CommonResponse response = client.getCommonResponse(request);
-			System.out.println(response.getData());
+			log.info(response.getData());
 
 		} catch (Exception e) {
 			e.printStackTrace();
