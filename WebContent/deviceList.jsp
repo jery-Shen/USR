@@ -163,7 +163,7 @@ $(function(){
                     <img v-if="device.trClass=='text-mute'" src="${pageContext.request.contextPath}/img/logo_mute.png">
                     <img v-if="device.trClass=='text-danger'" src="${pageContext.request.contextPath}/img/logo_danger.png">
                     
-                    <span class="title">智控{{device.deviceId}}</span>
+                    <span class="title">智控{{device.deviceId}}<span v-if="device.desc">({{device.desc}})</span></span>
                     <span class="status">{{device.infoBarStr}}</span>
                 </div>
                 <div class="values">

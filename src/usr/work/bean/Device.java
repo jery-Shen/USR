@@ -10,6 +10,7 @@ public class Device {
 	private int areaId;
 	private int deviceId;
 	private int enable;
+	private String desc;
 	private String mac;
 	private String des;
 	private String deviceIp;
@@ -606,6 +607,14 @@ public class Device {
 
 	public void setDeviceListener(DeviceListener deviceListener) {
 		this.deviceListener = deviceListener;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 
 }

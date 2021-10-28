@@ -14,7 +14,7 @@ public class DeviceDao {
 	
 	public boolean add(Device device){
 		boolean flag = false;
-		String sql = "insert into u_device(u_area_id,u_device_id,u_mac,u_des,u_update_time) values(?,?,?,?,now())";
+		String sql = "insert into u_device(u_area_id,u_device_id,u_mac,u_desc,u_des,u_update_time) values(?,?,?,?,?,now())";
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		try {
@@ -23,7 +23,8 @@ public class DeviceDao {
 			pstmt.setInt(1,device.getAreaId());
 			pstmt.setInt(2, device.getDeviceId());
 			pstmt.setString(3, device.getMac());
-			pstmt.setString(4, device.getDes());
+			pstmt.setString(4, device.getDesc());
+			pstmt.setString(5, device.getDes());
 			pstmt.executeUpdate();
 			flag = true;
 		} catch (Exception e) {
@@ -105,6 +106,30 @@ public class DeviceDao {
 		}
 		return flag;
 	}
+	
+	public boolean updateDesc(Device device){
+		boolean flag = false;
+		String sql ="update u_device set "
+				+ "u_desc=? "
+				+ "where u_area_id=? and u_device_id=?";
+		PreparedStatement pstmt =null;
+		Connection conn=null;
+		try {
+			conn=DBO.getConn();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, device.getDesc());
+			pstmt.setInt(2, device.getAreaId());
+			pstmt.setInt(3, device.getDeviceId());
+			if(pstmt.executeUpdate()>0){
+				flag = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			DBO.close(conn,pstmt);
+		}
+		return flag;
+	}
 
 	public Device get(int areaId,int deviceId) {
 		Device device = null;
@@ -124,6 +149,7 @@ public class DeviceDao {
 				device.setEnable(rs.getInt("u_enable"));
 				device.setMac(rs.getString("u_mac"));
 				device.setDes(rs.getString("u_des"));
+				device.setDesc(rs.getString("u_desc"));
 				device.setAreaId(rs.getInt("u_area_id"));
 				device.setDeviceId(rs.getInt("u_device_id"));
 				device.setDeviceIp(rs.getString("u_device_ip"));
@@ -207,6 +233,7 @@ public class DeviceDao {
 				device.setEnable(rs.getInt("u_enable"));
 				device.setMac(rs.getString("u_mac"));
 				device.setDes(rs.getString("u_des"));
+				device.setDesc(rs.getString("u_desc"));
 				device.setAreaId(rs.getInt("u_area_id"));
 				device.setDeviceId(rs.getInt("u_device_id"));
 				device.setDeviceIp(rs.getString("u_device_ip"));
@@ -289,6 +316,7 @@ public class DeviceDao {
 				device.setEnable(rs.getInt("u_enable"));
 				device.setMac(rs.getString("u_mac"));
 				device.setDes(rs.getString("u_des"));
+				device.setDesc(rs.getString("u_desc"));
 				device.setAreaId(rs.getInt("u_area_id"));
 				device.setDeviceId(rs.getInt("u_device_id"));
 				device.setDeviceIp(rs.getString("u_device_ip"));
