@@ -65,12 +65,12 @@ public class UpdateDevice extends HttpServlet {
 				sendQueue.add(bytes);
 			}
 			if(dpUpLimit!=-1){
-				byte[] pBytes = Hex.hex4toByte(dpUpLimit*10);
+				byte[] pBytes = Hex.hex4toByte(dpUpLimit);
 				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7d,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
 			if(dpDownLimit!=-1){
-				byte[] pBytes = Hex.hex4toByte(dpDownLimit*10);
+				byte[] pBytes = Hex.hex4toByte(dpDownLimit);
 				byte[] bytes = new byte[]{(byte) deviceId,0x06,0x03,0x7e,pBytes[0],pBytes[1]};
 				sendQueue.add(bytes);
 			}
