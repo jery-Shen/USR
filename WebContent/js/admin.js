@@ -68,6 +68,8 @@ function formatDevice(device) {
 	device.dpAlarm = !device.dpAlarmClose;
 	device.inWindAlarm = !device.inWindAlarmClose;
 
+
+
 	device.inWindSpeed = (device.inWindSpeed / 100).toFixed(2);
 	device.outWindSpeed = (device.outWindSpeed / 100).toFixed(2);
 	device.airSpeed10 = (device.airSpeed10 / 100).toFixed(2);
@@ -85,6 +87,12 @@ function formatDevice(device) {
 	device.airSpeed40 = (device.airSpeed40 / 100).toFixed(2);
 	device.airSpeed45 = (device.airSpeed45 / 100).toFixed(2);
 	device.airSpeed50 = (device.airSpeed50 / 100).toFixed(2);
+
+	if(window.moment && device.online==0 && moment(device.updateTime, 'YYYY-MM-DD HH:mm:ss').add(30, 'seconds').isAfter()){
+		device.online = 1;
+	}
+	device.updateTime
+
 	return device;
 }
 
